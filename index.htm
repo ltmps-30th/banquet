@@ -259,7 +259,7 @@
                         <div class="form-group">
                             <label>聯絡人姓名 *</label>
                             <!-- 加入 oninput 確保與收據抬頭同步 -->
-                            <input type="text" id="contact-name" required placeholder="請輸入姓名" oninput="updateReceiptFromContact()">
+                            <input type="text" id="contact-name" required placeholder="請輸入姓名" oninput="updateReceiptFromContact(); saveDraft();">
                         </div>
                         <div class="form-group">
                             <label>身份 *</label>
@@ -275,11 +275,11 @@
                         </div>
                         <div class="form-group">
                             <label>聯絡電話 *</label>
-                            <input type="tel" id="contact-phone" required placeholder="請輸入手提號碼">
+                            <input type="tel" id="contact-phone" required placeholder="請輸入手提號碼" oninput="saveDraft()">
                         </div>
                         <div class="form-group" style="margin-bottom:0;">
                             <label>電郵地址 (接收確認信及電子收據) *</label>
-                            <input type="email" id="contact-email" required placeholder="example@email.com">
+                            <input type="email" id="contact-email" required placeholder="example@email.com" oninput="saveDraft()">
                         </div>
                     </div>
 
@@ -298,7 +298,7 @@
                     <!-- 額外捐款與動態計算的金額提示 -->
                     <div class="form-group" style="margin-bottom: 20px;">
                         <label style="color:var(--gold-dark); font-size:15px;">💖 額外捐款 (HK$)</label>
-                        <input type="number" id="extra-donation" min="0" placeholder="填寫金額 (可留空)" oninput="updateTotal()">
+                        <input type="number" id="extra-donation" min="0" placeholder="填寫金額 (可留空)" oninput="updateTotal(); saveDraft();">
                     </div>
 
                     <div class="total-price-tag" id="display-total">應付總額：HK$ 200 (共 1 人)</div>
@@ -308,14 +308,13 @@
                         <div class="section-title">收據及付款詳情</div>
                         
                         <div class="form-group" style="margin-bottom:20px;">
-                            <!-- 新增：與聯絡人相同選項 -->
                             <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
                                 <label style="margin:0;">付款收據抬頭 *</label>
                                 <label style="font-size:13px; color:var(--primary-blue); cursor:pointer; font-weight:bold; display:flex; align-items:center; margin:0;">
                                     <input type="checkbox" id="same-as-contact-checkbox" onchange="copyContactToReceipt()" style="width:16px; height:16px; margin:0 6px 0 0; cursor:pointer;"> 與聯絡人相同
                                 </label>
                             </div>
-                            <input type="text" id="receipt-title" required placeholder="請填寫收據抬頭 (例如機構或個人名稱)">
+                            <input type="text" id="receipt-title" required placeholder="請填寫收據抬頭 (例如機構或個人名稱)" oninput="saveDraft()">
                         </div>
 
                         <!-- 直接顯示的付款方式 -->
@@ -438,7 +437,6 @@
             saveDraft();
         }
 
-        // --- 收據抬頭與聯絡人同步功能 ---
         function copyContactToReceipt() {
             if (document.getElementById('same-as-contact-checkbox').checked) {
                 document.getElementById('receipt-title').value = document.getElementById('contact-name').value;
@@ -453,7 +451,6 @@
                 document.getElementById('receipt-title').value = document.getElementById('contact-name').value;
             }
         }
-        // --------------------------------
 
         let nextAttId = 2; 
 
@@ -512,6 +509,30 @@
             return names;
         }
 
+        // ================= 圖片預覽功能 =================
+        let previewImageSrc = "";
+
+        function updateFileName(input) {
+            const display = document.getElementById('file-name-display');
+            if (input.files && input.files.length > 0) {
+                const file = input.files[0];
+                display.innerHTML = `<span style="color:var(--primary-blue); font-weight:bold;">✓ 已選擇：${file.name}</span>`;
+                document.querySelector('.file-upload-wrapper').style.borderColor = "var(--primary-blue)";
+                
+                // 使用 FileReader 產生 Base64 以供畫面上預覽
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    previewImageSrc = e.target.result;
+                };
+                reader.readAsDataURL(file);
+
+            } else {
+                display.innerHTML = '📁 點擊上載截圖<br><span style="font-size:12px;">(支援 JPG, PNG)</span>';
+                previewImageSrc = "";
+            }
+        }
+        // ===============================================
+
         function goToConfirm() {
             saveDraft();
 
@@ -558,12 +579,21 @@
                 ? `<div class="summary-row"><span class="summary-label">額外捐款</span><span class="summary-value" style="color:var(--gold-dark);">HK$ ${extraDonation}</span></div>` 
                 : "";
 
+            // 動態加入圖片預覽區塊
+            let proofDisplay = `<span style="color:var(--gold-dark);">${fileName}</span>`;
+            if (previewImageSrc) {
+                proofDisplay += `<br><img src="${previewImageSrc}" style="max-width: 100%; max-height: 250px; margin-top: 12px; border-radius: 8px; border: 1.5px solid #eee; display: block; margin-left: auto;">`;
+            }
+
             summaryHTML += `
                 <div class="ui-card">
                     <h4 style="color:var(--primary-blue); margin-top:0; margin-bottom:15px; border-bottom:2px solid #f0f0f0; padding-bottom:10px;">收據及付款</h4>
                     <div class="summary-row"><span class="summary-label">收據抬頭</span><span class="summary-value">${receipt_title}</span></div>
                     ${donationHtml}
-                    <div class="summary-row"><span class="summary-label">付款證明</span><span class="summary-value" style="color:var(--gold-dark);">${fileName}</span></div>
+                    <div class="summary-row" style="flex-direction: column; align-items:flex-end; border:none; margin-bottom:0; padding-bottom:0;">
+                        <span class="summary-label" style="width:100%; text-align:left; margin-bottom:8px;">付款證明</span>
+                        <span class="summary-value" style="width:100%;">${proofDisplay}</span>
+                    </div>
                     
                     <div class="total-price-tag" style="margin-top:20px; font-size:18px;">應付總額：HK$ ${totalAmt}</div>
                 </div>
@@ -573,17 +603,7 @@
             switchPage('confirm-page');
         }
 
-        function updateFileName(input) {
-            const display = document.getElementById('file-name-display');
-            if (input.files && input.files.length > 0) {
-                display.innerHTML = `<span style="color:var(--primary-blue); font-weight:bold;">✓ 已選擇：${input.files[0].name}</span>`;
-                document.querySelector('.file-upload-wrapper').style.borderColor = "var(--primary-blue)";
-            } else {
-                display.innerHTML = '📁 點擊上載截圖<br><span style="font-size:12px;">(支援 JPG, PNG)</span>';
-            }
-        }
-
-        const DRAFT_KEY = 'ltmps_gala_30_draft_v5';
+        const DRAFT_KEY = 'ltmps_gala_30_draft_v6';
 
         function saveDraft() {
             const extraNames = [];
@@ -596,7 +616,7 @@
                 cPhone: document.getElementById('contact-phone').value,
                 cEmail: document.getElementById('contact-email').value,
                 receiptTitle: document.getElementById('receipt-title').value,
-                sameAsContactReceipt: document.getElementById('same-as-contact-checkbox').checked, // 儲存勾選狀態
+                sameAsContactReceipt: document.getElementById('same-as-contact-checkbox').checked,
                 extraDonation: document.getElementById('extra-donation').value,
                 extraNames: extraNames
             };
@@ -634,9 +654,6 @@
             }
             updateTotal();
         }
-
-        document.getElementById('registration-form').addEventListener('input', saveDraft);
-        document.getElementById('registration-form').addEventListener('change', saveDraft);
 
         window.addEventListener('DOMContentLoaded', () => {
             loadDraft();     
