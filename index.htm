@@ -220,9 +220,6 @@
             <div class="content-area">
                 <div id="draft-notice" class="draft-notice">📝 已自動為您載入上次未完成的紀錄</div>
 
-                <!-- 動態計算的金額提示 -->
-                <div class="total-price-tag" id="display-total">應付總額：HK$ 200 (共 1 人)</div>
-
                 <form id="registration-form" onsubmit="event.preventDefault(); goToConfirm();">
                     
                     <!-- 第1位出席者 (聯絡人) -->
@@ -266,11 +263,14 @@
                         <button type="button" class="btn btn-add" onclick="addAttendee()">+ 增加出席人數</button>
                     </div>
 
+                    <!-- 動態計算的金額提示 (已移動至此) -->
+                    <div class="total-price-tag" id="display-total">應付總額：HK$ 200 (共 1 人)</div>
+
                     <!-- 付款及收據卡片 -->
                     <div class="ui-card">
                         <div class="section-title">收據及付款詳情</div>
                         
-                        <!-- 新增：付款收據抬頭 -->
+                        <!-- 付款收據抬頭 -->
                         <div class="form-group" style="margin-bottom:20px;">
                             <label>付款收據抬頭 *</label>
                             <input type="text" id="receipt-title" required placeholder="請填寫收據抬頭 (例如機構或個人名稱)">
@@ -594,7 +594,6 @@
         function sendFetch(payload) {
             document.getElementById('loading-overlay').classList.add('show');
             
-            // ⚠️ 已為您更新為最新要求的 Web App URL
             const scriptURL = 'https://script.google.com/macros/s/AKfycbxPp6BJZOiKvpr09CL9OODdd-uq3B3BfkJAdPCnhPUdvOC7wURzr3GLGXca-2ujS67-NQ/exec';
 
             fetch(scriptURL, {
