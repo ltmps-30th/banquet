@@ -171,9 +171,38 @@
 
         .draft-notice { background: rgba(212, 175, 55, 0.15); color: var(--gold-dark); text-align: center; padding: 12px; font-size: 14px; font-weight: bold; border-radius: 12px; margin-bottom: 15px; display: none; }
 
-        #loading-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(10px); display: flex; justify-content: center; align-items: center; flex-direction: column; z-index: 100; opacity: 0; visibility: hidden; transition: 0.3s; }
+        /* ================= 修復並強化的載入中畫面 ================= */
+        #loading-overlay { 
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%; 
+            background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(10px); 
+            display: flex; justify-content: center; align-items: center; flex-direction: column; 
+            z-index: 100; opacity: 0; visibility: hidden; transition: 0.3s; 
+        }
         #loading-overlay.show { opacity: 1; visibility: visible; }
-        .loader-ring { width: 50px; height: 50px; border: 4px solid transparent; border-top-color: var(--gold-main); border-left-color: var(--primary-blue); border-radius: 50%; animation: spin 1s infinite; }
+        
+        /* 核心修復：加入旋轉的 keyframes 與更明顯的軌道底色 */
+        @keyframes spin { 
+            0% { transform: rotate(0deg); } 
+            100% { transform: rotate(360deg); } 
+        }
+        .loader-ring { 
+            width: 55px; height: 55px; 
+            border: 5px solid rgba(0, 51, 160, 0.1); /* 軌道底色 */
+            border-top-color: var(--primary-blue); 
+            border-left-color: var(--gold-main); 
+            border-radius: 50%; 
+            animation: spin 1s linear infinite; /* 改為 linear 確保旋轉流暢不斷層 */
+        }
+        
+        /* 新增：呼吸文字效果 */
+        @keyframes pulseText { 
+            0%, 100% { opacity: 1; } 
+            50% { opacity: 0.4; } 
+        }
+        .pulse-text {
+            animation: pulseText 1.5s infinite;
+        }
+        /* ======================================================= */
 
         @media screen and (max-width: 600px) {
             body { display: block; background: var(--bg-color); }
@@ -188,9 +217,11 @@
     <div id="particles"></div>
 
     <div class="container">
+        <!-- 優化後的載入中遮罩 -->
         <div id="loading-overlay">
             <div class="loader-ring"></div>
-            <h3 style="margin-top: 20px; color: var(--primary-blue); font-size: 16px;">資料處理及儲存中...</h3>
+            <h3 style="margin-top: 25px; color: var(--primary-blue); font-size: 18px;">資料上載中...</h3>
+            <p class="pulse-text" style="color: #888; font-size: 14px; margin-top: 10px; font-weight:bold;">請勿關閉視窗，這可能需要幾秒鐘 ⏳</p>
         </div>
 
         <!-- 1. 首頁 -->
@@ -541,7 +572,7 @@
             }
         }
 
-        const DRAFT_KEY = 'ltmps_gala_30_draft_v3';
+        const DRAFT_KEY = 'ltmps_gala_30_draft_v4';
 
         function saveDraft() {
             const extraNames = [];
@@ -643,7 +674,7 @@
         function sendFetchAndSaveToFirebase(payload) {
             document.getElementById('loading-overlay').classList.add('show');
             
-            // 已更新為最新的 Apps Script URL
+            // 已經更新為您最新的 Apps Script 網址
             const scriptURL = 'https://script.google.com/macros/s/AKfycbx77jeCm1BoEI77qhXHaMB6Q-JjFvSVGEMVTYTboXdhrT1nByZj4OpTOuznWOHUWz1y/exec';
 
             fetch(scriptURL, {
