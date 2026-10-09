@@ -258,7 +258,8 @@
                         <div class="section-title">第 1 位出席者 (聯絡人)</div>
                         <div class="form-group">
                             <label>聯絡人姓名 *</label>
-                            <input type="text" id="contact-name" required placeholder="請輸入姓名">
+                            <!-- 加入 oninput 確保與收據抬頭同步 -->
+                            <input type="text" id="contact-name" required placeholder="請輸入姓名" oninput="updateReceiptFromContact()">
                         </div>
                         <div class="form-group">
                             <label>身份 *</label>
@@ -307,7 +308,13 @@
                         <div class="section-title">收據及付款詳情</div>
                         
                         <div class="form-group" style="margin-bottom:20px;">
-                            <label>付款收據抬頭 *</label>
+                            <!-- 新增：與聯絡人相同選項 -->
+                            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+                                <label style="margin:0;">付款收據抬頭 *</label>
+                                <label style="font-size:13px; color:var(--primary-blue); cursor:pointer; font-weight:bold; display:flex; align-items:center; margin:0;">
+                                    <input type="checkbox" id="same-as-contact-checkbox" onchange="copyContactToReceipt()" style="width:16px; height:16px; margin:0 6px 0 0; cursor:pointer;"> 與聯絡人相同
+                                </label>
+                            </div>
                             <input type="text" id="receipt-title" required placeholder="請填寫收據抬頭 (例如機構或個人名稱)">
                         </div>
 
@@ -430,6 +437,23 @@
             }
             saveDraft();
         }
+
+        // --- 收據抬頭與聯絡人同步功能 ---
+        function copyContactToReceipt() {
+            if (document.getElementById('same-as-contact-checkbox').checked) {
+                document.getElementById('receipt-title').value = document.getElementById('contact-name').value;
+            } else {
+                document.getElementById('receipt-title').value = '';
+            }
+            saveDraft();
+        }
+
+        function updateReceiptFromContact() {
+            if (document.getElementById('same-as-contact-checkbox').checked) {
+                document.getElementById('receipt-title').value = document.getElementById('contact-name').value;
+            }
+        }
+        // --------------------------------
 
         let nextAttId = 2; 
 
@@ -559,7 +583,7 @@
             }
         }
 
-        const DRAFT_KEY = 'ltmps_gala_30_draft_v4';
+        const DRAFT_KEY = 'ltmps_gala_30_draft_v5';
 
         function saveDraft() {
             const extraNames = [];
@@ -572,6 +596,7 @@
                 cPhone: document.getElementById('contact-phone').value,
                 cEmail: document.getElementById('contact-email').value,
                 receiptTitle: document.getElementById('receipt-title').value,
+                sameAsContactReceipt: document.getElementById('same-as-contact-checkbox').checked, // 儲存勾選狀態
                 extraDonation: document.getElementById('extra-donation').value,
                 extraNames: extraNames
             };
@@ -591,6 +616,10 @@
                     if (draft.receiptTitle) document.getElementById('receipt-title').value = draft.receiptTitle;
                     if (draft.extraDonation) document.getElementById('extra-donation').value = draft.extraDonation;
                     
+                    if (draft.sameAsContactReceipt !== undefined) {
+                        document.getElementById('same-as-contact-checkbox').checked = draft.sameAsContactReceipt;
+                    }
+
                     toggleOtherInput();
 
                     if (draft.extraNames && Array.isArray(draft.extraNames)) {
@@ -640,7 +669,6 @@
                 pax: totalPax,
                 extraDonation: extraDonation,
                 totalAmount: totalAmt,
-                // 為 Firebase 準備明確的字串格式，解決空陣列不儲存的問題
                 extraAttendees: JSON.stringify(extraNames)
             };
 
@@ -678,7 +706,6 @@
                         ? `其他 (${payload.contactIdentityOther})` 
                         : payload.contactIdentity;
 
-                    // 轉換同行者陣列為純文字，確保 Firebase 100% 寫入
                     const extraList = JSON.parse(payload.extraAttendees);
                     const extraStr = extraList.length > 0 ? extraList.join(" , ") : "無同行者";
 
@@ -695,7 +722,7 @@
                         pax: payload.pax,
                         extraDonation: payload.extraDonation,
                         totalAmount: payload.totalAmount,
-                        extraAttendees: extraStr, // 改為寫入字串
+                        extraAttendees: extraStr, 
                         paymentProofUrl: data.fileUrl || "未有上載"
                     })
                     .then(() => {
