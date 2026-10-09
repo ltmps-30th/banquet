@@ -4,7 +4,13 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>藍循三十周年校慶晚宴</title>
+    <!-- 特效庫 -->
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    
+    <!-- 加入 Firebase 官方 SDK (Compat 版本以兼容原生寫法) -->
+    <script src="https://www.gstatic.com/firebasejs/10.5.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.5.0/firebase-database-compat.js"></script>
+
     <style>
         :root {
             --primary-blue: #0033A0;
@@ -17,7 +23,6 @@
             --danger-color: #ff4d4f;
         }
 
-        /* 基礎重置與防彈級高度設定 */
         html, body { 
             margin: 0; padding: 0; 
             width: 100%; height: 100%; 
@@ -28,80 +33,39 @@
         }
 
         body {
-            /* 保持雙主色調的夜空漸變背景 */
             background: linear-gradient(135deg, var(--deep-blue) 0%, var(--primary-blue) 100%);
             display: flex; justify-content: center; align-items: center;
         }
 
-        /* ================= 極致優化版夜空與流星特效 ================= */
+        /* 夜空與流星特效 */
         #particles { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 0; pointer-events: none; overflow: hidden;}
         
-        /* 閃爍繁星 */
         .star { 
-            position: absolute; 
-            background: #ffffff; 
-            border-radius: 50%; 
+            position: absolute; background: #ffffff; border-radius: 50%; 
             box-shadow: 0 0 6px #ffffff, 0 0 12px rgba(255,255,255,0.5); 
-            animation: twinkle infinite alternate ease-in-out; 
-            /* 加入 opacity:0.2 預設值防止閃爍 */
-            opacity: 0.2;
+            animation: twinkle infinite alternate ease-in-out; opacity: 0.2;
         }
-        @keyframes twinkle { 
-            0% { opacity: 0.2; transform: scale(0.6); } 
-            100% { opacity: 1; transform: scale(1.2); } 
-        }
+        @keyframes twinkle { 0% { opacity: 0.2; transform: scale(0.6); } 100% { opacity: 1; transform: scale(1.2); } }
 
-        /* 流星 (加強核心與尾巴，放慢速度) */
         .meteor {
-            position: absolute;
-            width: 4px; height: 4px; /* 加大流星核心 */
-            background: #ffffff;
-            border-radius: 50%;
-            box-shadow: 0 0 15px 4px rgba(255, 255, 255, 1); /* 加強發光 */
-            opacity: 0;
-            animation: shootingStar linear infinite;
+            position: absolute; width: 4px; height: 4px; background: #ffffff; border-radius: 50%;
+            box-shadow: 0 0 15px 4px rgba(255, 255, 255, 1); opacity: 0; animation: shootingStar linear infinite;
         }
-        
-        /* 流星尾巴 */
         .meteor::after {
-            content: '';
-            position: absolute;
-            top: 50%; 
-            transform: translateY(-50%);
-            right: 100%; 
-            width: 250px; /* 加長尾巴 */
-            height: 2px;  /* 加粗尾巴 */
-            background: linear-gradient(to left, rgba(255,255,255,1) 0%, rgba(255,255,255,0) 100%);
+            content: ''; position: absolute; top: 50%; transform: translateY(-50%); right: 100%; 
+            width: 250px; height: 2px; background: linear-gradient(to left, rgba(255,255,255,1) 0%, rgba(255,255,255,0) 100%);
         }
-        
-        /* 放慢動畫速度與延長距離的比例 */
         @keyframes shootingStar {
-            0% { 
-                transform: rotate(135deg) translateX(0); 
-                opacity: 0; 
-            }
-            5% { 
-                opacity: 1; 
-            }
-            /* 將動畫位移比例拉長到 35%，讓它飛得更慢更優雅 */
-            35% { 
-                transform: rotate(135deg) translateX(250vw); 
-                opacity: 0; 
-            }
-            100% { 
-                transform: rotate(135deg) translateX(250vw); 
-                opacity: 0; 
-            }
+            0% { transform: rotate(135deg) translateX(0); opacity: 0; }
+            5% { opacity: 1; }
+            35% { transform: rotate(135deg) translateX(250vw); opacity: 0; }
+            100% { transform: rotate(135deg) translateX(250vw); opacity: 0; }
         }
-        /* =================================================== */
 
         .container {
-            width: 95%; max-width: 600px; height: 90vh; 
-            background: var(--bg-color);
-            border-radius: 24px;
-            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.4);
-            position: relative; z-index: 10; 
-            overflow: hidden;
+            width: 95%; max-width: 600px; height: 90vh; background: var(--bg-color);
+            border-radius: 24px; box-shadow: 0 20px 50px rgba(0, 0, 0, 0.4);
+            position: relative; z-index: 10; overflow: hidden;
             animation: containerEntrance 0.6s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
         }
 
@@ -111,20 +75,15 @@
             position: absolute; top: 0; left: 0; right: 0; bottom: 0;
             opacity: 0; visibility: hidden; transform: translateX(30px);
             transition: all 0.4s cubic-bezier(0.25, 1, 0.5, 1); 
-            overflow-y: auto;
-            -webkit-overflow-scrolling: touch; 
-            background: var(--bg-color);
+            overflow-y: auto; -webkit-overflow-scrolling: touch; background: var(--bg-color);
         }
         
         .page.active { opacity: 1; visibility: visible; transform: translateX(0); }
         .page::-webkit-scrollbar { display: none; }
 
-        /* --- App 級頂部導航欄 --- */
         .app-header {
-            background: white; padding: 20px;
-            display: flex; align-items: center; justify-content: space-between;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
-            position: sticky; top: 0; z-index: 50;
+            background: white; padding: 20px; display: flex; align-items: center; justify-content: space-between;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05); position: sticky; top: 0; z-index: 50;
         }
         
         .back-btn {
@@ -135,7 +94,6 @@
         .back-btn:active { background: rgba(0, 51, 160, 0.15); transform: scale(0.95); }
         .app-header h2 { font-size: 18px; color: var(--primary-blue); margin: 0; text-align: center; font-weight: 900; }
 
-        /* --- 頁面內容區 --- */
         .content-area { padding: 25px 20px 40px 20px; }
         
         .hero-banner { text-align: center; margin-bottom: 20px; margin-top: 10px;}
@@ -145,7 +103,6 @@
         @keyframes pulseGlowImg { 0% { transform: scale(1); filter: drop-shadow(0 5px 10px rgba(212, 175, 55, 0.3)); } 100% { transform: scale(1.06); filter: drop-shadow(0 10px 20px rgba(212, 175, 55, 0.8)); } }
         .hero-banner h1 { color: var(--primary-blue); font-size: 26px; font-weight: 900; margin-bottom: 8px; }
 
-        /* 卡片設計 UI */
         .ui-card {
             background: white; border-radius: 16px; padding: 20px; margin-bottom: 20px;
             box-shadow: 0 4px 15px rgba(0,0,0,0.03); border: 1px solid rgba(0,51,160,0.05);
@@ -155,7 +112,6 @@
         .info-item:last-child { margin-bottom: 0; border-bottom: none; padding-bottom: 0; }
         .icon { width: 32px; height: 32px; background: rgba(212, 175, 55, 0.15); border-radius: 50%; display: flex; justify-content: center; align-items: center; margin-right: 15px; font-size: 14px; flex-shrink: 0; }
 
-        /* 按鈕設計 */
         .btn { 
             background: linear-gradient(135deg, var(--gold-main), var(--gold-dark)); color: white; border: none; 
             padding: 16px 20px; border-radius: 30px; font-size: 17px; cursor: pointer; text-align: center; 
@@ -167,7 +123,6 @@
 
         .sticky-bottom { position: sticky; bottom: 20px; z-index: 40; padding: 0 10px; }
 
-        /* --- 表單設計 --- */
         .section-title { font-size: 17px; color: var(--primary-blue); margin-bottom: 15px; font-weight: bold; border-left: 4px solid var(--gold-main); padding-left: 10px; }
         .form-group { margin-bottom: 18px; }
         label { display: block; font-weight: bold; color: #444; font-size: 14px; margin-bottom: 8px; }
@@ -187,8 +142,7 @@
 
         .extra-att-row {
             background: rgba(0,51,160,0.02); border: 1px solid #eee; 
-            border-radius: 12px; padding: 15px; margin-bottom: 12px;
-            animation: fadeIn 0.3s ease;
+            border-radius: 12px; padding: 15px; margin-bottom: 12px; animation: fadeIn 0.3s ease;
         }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(-5px); } to { opacity: 1; transform: translateY(0); } }
 
@@ -227,13 +181,12 @@
 </head>
 <body>
 
-    <!-- 全新浪漫夜空及流星特效容器 -->
     <div id="particles"></div>
 
     <div class="container">
         <div id="loading-overlay">
             <div class="loader-ring"></div>
-            <h3 style="margin-top: 20px; color: var(--primary-blue); font-size: 16px;">資料處理中...</h3>
+            <h3 style="margin-top: 20px; color: var(--primary-blue); font-size: 16px;">資料處理及儲存中...</h3>
         </div>
 
         <!-- 1. 首頁 -->
@@ -326,7 +279,6 @@
                     <div class="ui-card">
                         <div class="section-title">收據及付款詳情</div>
                         
-                        <!-- 付款收據抬頭 -->
                         <div class="form-group" style="margin-bottom:20px;">
                             <label>付款收據抬頭 *</label>
                             <input type="text" id="receipt-title" required placeholder="請填寫收據抬頭 (例如機構或個人名稱)">
@@ -388,11 +340,24 @@
     </div>
 
     <script>
-        // 夜空星星及流星特效 JS
+        // ================= Firebase 初始化設定 =================
+        const firebaseConfig = {
+            apiKey: "AIzaSyBr0-oNmRN859g6bfGDVjSdA1brJC8CxNs",
+            authDomain: "ltmps-c92a0.firebaseapp.com",
+            databaseURL: "https://ltmps-c92a0-default-rtdb.asia-southeast1.firebasedatabase.app",
+            projectId: "ltmps-c92a0",
+            storageBucket: "ltmps-c92a0.firebasestorage.app",
+            messagingSenderId: "716255242034",
+            appId: "1:716255242034:web:b25a037869d8a9de6f992b"
+        };
+        // 啟動 Firebase 應用程式
+        firebase.initializeApp(firebaseConfig);
+        const database = firebase.database();
+        // =======================================================
+
+
         function createParticles() {
             const container = document.getElementById('particles');
-            
-            // 隨機生成閃爍的星星
             for(let i = 0; i < 40; i++) {
                 let star = document.createElement('div');
                 star.className = 'star';
@@ -401,37 +366,23 @@
                 star.style.width = Math.random() * 3 + 1 + 'px';
                 star.style.height = star.style.width;
                 star.style.animationDuration = Math.random() * 3 + 2 + 's';
-                
-                // 【核心修正】加入負數延遲，讓動畫在網頁載入時就「已經運行了一段時間」，完全消除初次載入的閃爍感
                 star.style.animationDelay = '-' + (Math.random() * 5) + 's';
-                
                 container.appendChild(star);
             }
-            
-            // 隨機生成流星 (延長動畫週期，放慢視覺速度)
             for(let i = 0; i < 6; i++) {
                 let meteor = document.createElement('div');
                 meteor.className = 'meteor';
-                
-                // 從畫面中上方或右上外側產生
                 meteor.style.top = (Math.random() * 60 - 20) + 'vh'; 
                 meteor.style.left = (Math.random() * 100 + 10) + 'vw'; 
-                
-                // 延長動畫時間，從原本的 6s~10s 拉長到 10s~16s
                 meteor.style.animationDuration = (Math.random() * 6 + 10) + 's';
-                
-                // 流星不使用負數延遲，讓它們依序隨機飛出
                 meteor.style.animationDelay = (Math.random() * 15) + 's';
-                
                 container.appendChild(meteor);
             }
-
-            // 【驚喜】手動生成第一顆「首發流星」，保證使用者進網頁 1 秒後一定看得到一顆緩慢優雅的流星
             let firstMeteor = document.createElement('div');
             firstMeteor.className = 'meteor';
             firstMeteor.style.top = '-10vh';
             firstMeteor.style.left = '70vw';
-            firstMeteor.style.animationDuration = '12s'; // 速度放慢
+            firstMeteor.style.animationDuration = '12s'; 
             firstMeteor.style.animationDelay = '1s';
             container.appendChild(firstMeteor);
         }
@@ -455,8 +406,7 @@
             saveDraft();
         }
 
-        // ================= 動態同行者邏輯 =================
-        let nextAttId = 2; // 聯絡人是第1位，同行者從第2位開始
+        let nextAttId = 2; 
 
         function addAttendee(name = '') {
             const currentPax = document.querySelectorAll('.extra-att-row').length + 1;
@@ -510,7 +460,6 @@
             return names;
         }
 
-        // ================= 進入確認頁面 =================
         function goToConfirm() {
             saveDraft();
 
@@ -576,7 +525,6 @@
             }
         }
 
-        // ================= Local Storage =================
         const DRAFT_KEY = 'ltmps_gala_30_draft_v2';
 
         function saveDraft() {
@@ -629,7 +577,6 @@
             loadDraft();     
         });
 
-        // ================= Final Submit =================
         function fireConfetti() {
             var end = Date.now() + 4000;
             (function frame() {
@@ -664,17 +611,19 @@
                     payload.fileData = event.target.result.split(',')[1];
                     payload.fileName = file.name;
                     payload.mimeType = file.type;
-                    sendFetch(payload);
+                    sendFetchAndSaveToFirebase(payload);
                 };
                 reader.readAsDataURL(file);
             } else {
-                sendFetch(payload);
+                sendFetchAndSaveToFirebase(payload);
             }
         }
 
-        function sendFetch(payload) {
+        // 整合 Apps Script 與 Firebase 雙軌寫入
+        function sendFetchAndSaveToFirebase(payload) {
             document.getElementById('loading-overlay').classList.add('show');
             
+            // 1. 送交 Google Apps Script (處理圖片與 Email)
             const scriptURL = 'https://script.google.com/macros/s/AKfycbxPp6BJZOiKvpr09CL9OODdd-uq3B3BfkJAdPCnhPUdvOC7wURzr3GLGXca-2ujS67-NQ/exec';
 
             fetch(scriptURL, {
@@ -685,21 +634,53 @@
             })
             .then(response => response.json())
             .then(data => {
-                document.getElementById('loading-overlay').classList.remove('show');
                 if(data.status === 'success') {
-                    localStorage.removeItem(DRAFT_KEY); 
-                    fireConfetti();
-                    setTimeout(() => {
-                        alert('🎉 報名成功！我們已發送確認電郵至您的郵箱。');
-                        window.location.reload(); 
-                    }, 600);
+                    
+                    // 2. Apps Script 成功後，將資料與圖片網址一併推送到 Firebase
+                    const finalIdentity = (payload.contactIdentity === '其他' && payload.contactIdentityOther) 
+                        ? `其他 (${payload.contactIdentityOther})` 
+                        : payload.contactIdentity;
+
+                    const dbRef = database.ref('registrations');
+                    const newRecord = dbRef.push();
+                    
+                    newRecord.set({
+                        timestamp: new Date().toISOString(), // 報名時間
+                        contactName: payload.name,
+                        contactIdentity: finalIdentity,
+                        contactPhone: payload.phone,
+                        contactEmail: payload.email,
+                        receiptTitle: payload.receiptTitle,
+                        pax: payload.pax,
+                        totalAmount: payload.totalAmount,
+                        extraAttendees: JSON.parse(payload.extraAttendees), // 將文字陣列轉回正式的 Array 格式儲存
+                        paymentProofUrl: data.fileUrl || "未有上載" // 儲存由 GAS 建立的 Google Drive 圖片連結
+                    })
+                    .then(() => {
+                        // Firebase 儲存也成功！
+                        document.getElementById('loading-overlay').classList.remove('show');
+                        localStorage.removeItem(DRAFT_KEY); 
+                        fireConfetti();
+                        setTimeout(() => {
+                            alert('🎉 報名成功！我們已發送確認電郵至您的郵箱。');
+                            window.location.reload(); 
+                        }, 600);
+                    })
+                    .catch(err => {
+                        // 即使 Firebase 失敗，電郵依然已經發出
+                        document.getElementById('loading-overlay').classList.remove('show');
+                        alert('🎉 報名成功！確認電郵已寄出。(唯資料庫連線不穩，請聯絡校方核對)');
+                        console.error("Firebase Error: ", err);
+                    });
+
                 } else {
+                    document.getElementById('loading-overlay').classList.remove('show');
                     alert('發生錯誤：' + (data.message || '請稍後再試。'));
                 }
             })
             .catch(error => {
                 document.getElementById('loading-overlay').classList.remove('show');
-                alert('系統連線異常。請確定已在 Apps Script 發布了「新版本」。');
+                alert('系統連線異常。請確定網路狀態或聯絡校方。');
             });
         }
     </script>
