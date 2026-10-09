@@ -28,13 +28,72 @@
         }
 
         body {
+            /* 保持雙主色調的夜空漸變背景 */
             background: linear-gradient(135deg, var(--deep-blue) 0%, var(--primary-blue) 100%);
             display: flex; justify-content: center; align-items: center;
         }
 
-        #particles { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 0; pointer-events: none; }
-        .star { position: absolute; background: rgba(255, 223, 115, 0.8); border-radius: 50%; box-shadow: 0 0 10px rgba(255, 223, 115, 0.8); animation: floatUp linear infinite; }
-        @keyframes floatUp { 0% { transform: translateY(100vh) scale(0); opacity: 0; } 20% { opacity: 1; transform: translateY(80vh) scale(1); } 80% { opacity: 1; } 100% { transform: translateY(-10vh) scale(0.5); opacity: 0; } }
+        /* ================= 極致優化版夜空與流星特效 ================= */
+        #particles { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 0; pointer-events: none; overflow: hidden;}
+        
+        /* 閃爍繁星 */
+        .star { 
+            position: absolute; 
+            background: #ffffff; 
+            border-radius: 50%; 
+            box-shadow: 0 0 6px #ffffff, 0 0 12px rgba(255,255,255,0.5); 
+            animation: twinkle infinite alternate ease-in-out; 
+            /* 加入 opacity:0.2 預設值防止閃爍 */
+            opacity: 0.2;
+        }
+        @keyframes twinkle { 
+            0% { opacity: 0.2; transform: scale(0.6); } 
+            100% { opacity: 1; transform: scale(1.2); } 
+        }
+
+        /* 流星 (加強核心與尾巴，放慢速度) */
+        .meteor {
+            position: absolute;
+            width: 4px; height: 4px; /* 加大流星核心 */
+            background: #ffffff;
+            border-radius: 50%;
+            box-shadow: 0 0 15px 4px rgba(255, 255, 255, 1); /* 加強發光 */
+            opacity: 0;
+            animation: shootingStar linear infinite;
+        }
+        
+        /* 流星尾巴 */
+        .meteor::after {
+            content: '';
+            position: absolute;
+            top: 50%; 
+            transform: translateY(-50%);
+            right: 100%; 
+            width: 250px; /* 加長尾巴 */
+            height: 2px;  /* 加粗尾巴 */
+            background: linear-gradient(to left, rgba(255,255,255,1) 0%, rgba(255,255,255,0) 100%);
+        }
+        
+        /* 放慢動畫速度與延長距離的比例 */
+        @keyframes shootingStar {
+            0% { 
+                transform: rotate(135deg) translateX(0); 
+                opacity: 0; 
+            }
+            5% { 
+                opacity: 1; 
+            }
+            /* 將動畫位移比例拉長到 35%，讓它飛得更慢更優雅 */
+            35% { 
+                transform: rotate(135deg) translateX(250vw); 
+                opacity: 0; 
+            }
+            100% { 
+                transform: rotate(135deg) translateX(250vw); 
+                opacity: 0; 
+            }
+        }
+        /* =================================================== */
 
         .container {
             width: 95%; max-width: 600px; height: 90vh; 
@@ -103,8 +162,6 @@
             display: block; width: 100%; font-weight: bold; box-shadow: 0 6px 15px rgba(212, 175, 55, 0.3); transition: all 0.3s; 
         }
         .btn:active { transform: translateY(2px); box-shadow: 0 2px 5px rgba(212, 175, 55, 0.3); }
-        .btn-outline { background: white; color: var(--primary-blue); border: 2px solid var(--primary-blue); box-shadow: none; margin-top: 10px; }
-        .btn-secondary { background: #e0e6ed; color: #444; box-shadow: none; }
         .btn-add { background: rgba(0, 51, 160, 0.05); color: var(--primary-blue); border: 1.5px dashed var(--primary-blue); margin-top: 15px; box-shadow: none;}
         .btn-add:hover, .btn-add:active { background: rgba(0, 51, 160, 0.1); transform: none; box-shadow: none;}
 
@@ -128,7 +185,6 @@
             background-repeat: no-repeat; background-position: right 15px center; background-size: 12px auto; padding-right: 40px;
         }
 
-        /* 動態增加出席者的輸入框樣式 */
         .extra-att-row {
             background: rgba(0,51,160,0.02); border: 1px solid #eee; 
             border-radius: 12px; padding: 15px; margin-bottom: 12px;
@@ -149,7 +205,6 @@
         .summary-label { color: #888; width: 35%; }
         .summary-value { color: #333; font-weight: bold; width: 65%; text-align: right; word-break: break-word; }
         
-        /* 置頂漂浮金額列 */
         .total-price-tag { 
             text-align: center; font-size: 20px; color: var(--primary-blue); font-weight: 900; 
             background: rgba(0,51,160,0.05); padding: 15px; border-radius: 12px; border: 1px solid rgba(0,51,160,0.1); 
@@ -172,6 +227,7 @@
 </head>
 <body>
 
+    <!-- 全新浪漫夜空及流星特效容器 -->
     <div id="particles"></div>
 
     <div class="container">
@@ -263,7 +319,7 @@
                         <button type="button" class="btn btn-add" onclick="addAttendee()">+ 增加出席人數</button>
                     </div>
 
-                    <!-- 動態計算的金額提示 (已移動至此) -->
+                    <!-- 動態計算的金額提示 -->
                     <div class="total-price-tag" id="display-total">應付總額：HK$ 200 (共 1 人)</div>
 
                     <!-- 付款及收據卡片 -->
@@ -306,7 +362,6 @@
                 </form>
             </div>
 
-            <!-- 獨立的吸底按鈕，防止被表單內容埋沒 -->
             <div class="sticky-bottom">
                 <button class="btn" onclick="document.getElementById('hidden-submit-btn').click();">繼續核對資料</button>
             </div>
@@ -333,19 +388,52 @@
     </div>
 
     <script>
-        // 背景特效
+        // 夜空星星及流星特效 JS
         function createParticles() {
             const container = document.getElementById('particles');
-            for(let i = 0; i < 15; i++) {
+            
+            // 隨機生成閃爍的星星
+            for(let i = 0; i < 40; i++) {
                 let star = document.createElement('div');
                 star.className = 'star';
                 star.style.left = Math.random() * 100 + 'vw';
-                star.style.width = Math.random() * 6 + 2 + 'px';
+                star.style.top = Math.random() * 100 + 'vh';
+                star.style.width = Math.random() * 3 + 1 + 'px';
                 star.style.height = star.style.width;
-                star.style.animationDuration = Math.random() * 10 + 5 + 's';
-                star.style.animationDelay = Math.random() * 5 + 's';
+                star.style.animationDuration = Math.random() * 3 + 2 + 's';
+                
+                // 【核心修正】加入負數延遲，讓動畫在網頁載入時就「已經運行了一段時間」，完全消除初次載入的閃爍感
+                star.style.animationDelay = '-' + (Math.random() * 5) + 's';
+                
                 container.appendChild(star);
             }
+            
+            // 隨機生成流星 (延長動畫週期，放慢視覺速度)
+            for(let i = 0; i < 6; i++) {
+                let meteor = document.createElement('div');
+                meteor.className = 'meteor';
+                
+                // 從畫面中上方或右上外側產生
+                meteor.style.top = (Math.random() * 60 - 20) + 'vh'; 
+                meteor.style.left = (Math.random() * 100 + 10) + 'vw'; 
+                
+                // 延長動畫時間，從原本的 6s~10s 拉長到 10s~16s
+                meteor.style.animationDuration = (Math.random() * 6 + 10) + 's';
+                
+                // 流星不使用負數延遲，讓它們依序隨機飛出
+                meteor.style.animationDelay = (Math.random() * 15) + 's';
+                
+                container.appendChild(meteor);
+            }
+
+            // 【驚喜】手動生成第一顆「首發流星」，保證使用者進網頁 1 秒後一定看得到一顆緩慢優雅的流星
+            let firstMeteor = document.createElement('div');
+            firstMeteor.className = 'meteor';
+            firstMeteor.style.top = '-10vh';
+            firstMeteor.style.left = '70vw';
+            firstMeteor.style.animationDuration = '12s'; // 速度放慢
+            firstMeteor.style.animationDelay = '1s';
+            container.appendChild(firstMeteor);
         }
         createParticles();
 
@@ -402,11 +490,8 @@
             saveDraft();
         }
 
-        // 更新總人數與總金額，並重新編排序號
         function updateTotal() {
             const extraRows = document.querySelectorAll('.extra-att-row');
-            
-            // 更新編號文字 (第 2, 3, 4... 位)
             extraRows.forEach((row, index) => {
                 row.querySelector('.att-num').innerText = index + 2; 
             });
@@ -416,7 +501,6 @@
             document.getElementById('display-total').innerText = `應付總額：HK$ ${totalAmt} (共 ${totalPax} 人)`;
         }
 
-        // 取得所有同行者的姓名陣列
         function getExtraAttendees() {
             const inputs = document.querySelectorAll('.extra-att-input');
             let names = [];
@@ -525,7 +609,6 @@
                     
                     toggleOtherInput();
 
-                    // 還原同行者列表
                     if (draft.extraNames && Array.isArray(draft.extraNames)) {
                         draft.extraNames.forEach(name => addAttendee(name));
                     }
@@ -562,18 +645,16 @@
             const totalPax = 1 + extraNames.length;
 
             const payload = {
-                // 相容 Apps script 發送電郵功能
                 name: document.getElementById('contact-name').value,
                 phone: document.getElementById('contact-phone').value,
                 email: document.getElementById('contact-email').value,
                 
-                // 新增詳細資料供後端試算表儲存
                 contactIdentity: document.getElementById('contact-identity').value,
                 contactIdentityOther: document.getElementById('contact-identity-other').value,
                 receiptTitle: document.getElementById('receipt-title').value,
                 pax: totalPax,
                 totalAmount: totalPax * 200,
-                extraAttendees: JSON.stringify(extraNames) // 文字陣列形式
+                extraAttendees: JSON.stringify(extraNames)
             };
 
             if (fileInput.files.length > 0) {
@@ -606,7 +687,7 @@
             .then(data => {
                 document.getElementById('loading-overlay').classList.remove('show');
                 if(data.status === 'success') {
-                    localStorage.removeItem(DRAFT_KEY); // 清除草稿
+                    localStorage.removeItem(DRAFT_KEY); 
                     fireConfetti();
                     setTimeout(() => {
                         alert('🎉 報名成功！我們已發送確認電郵至您的郵箱。');
