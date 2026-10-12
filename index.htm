@@ -7,9 +7,9 @@
     <!-- 特效庫 -->
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
     
-    <!-- 加入 Firebase 官方 SDK -->
+    <!-- 加入 Firebase 官方 SDK (已更換為 Firestore 版本) -->
     <script src="https://www.gstatic.com/firebasejs/10.5.0/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.5.0/firebase-database-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.5.0/firebase-firestore-compat.js"></script>
 
     <style>
         :root {
@@ -146,7 +146,6 @@
         }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(-5px); } to { opacity: 1; transform: translateY(0); } }
 
-        /* 直接顯示的付款方式方塊 */
         .payment-info-box {
             background: #fdfdfd; border: 1.5px solid #dce2e8; border-radius: 12px; 
             padding: 15px; margin-bottom: 20px; font-size: 14px; line-height: 1.6; color: #555;
@@ -171,7 +170,6 @@
 
         .draft-notice { background: rgba(212, 175, 55, 0.15); color: var(--gold-dark); text-align: center; padding: 12px; font-size: 14px; font-weight: bold; border-radius: 12px; margin-bottom: 15px; display: none; }
 
-        /* 修復並強化的載入中畫面 */
         #loading-overlay { 
             position: absolute; top: 0; left: 0; width: 100%; height: 100%; 
             background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(10px); 
@@ -373,18 +371,18 @@
     </div>
 
     <script>
-        // ================= Firebase 初始化設定 =================
+        // ================= Firebase (Firestore) 初始化設定 =================
         const firebaseConfig = {
             apiKey: "AIzaSyBr0-oNmRN859g6bfGDVjSdA1brJC8CxNs",
             authDomain: "ltmps-c92a0.firebaseapp.com",
-            databaseURL: "https://ltmps-c92a0-default-rtdb.asia-southeast1.firebasedatabase.app",
             projectId: "ltmps-c92a0",
             storageBucket: "ltmps-c92a0.firebasestorage.app",
             messagingSenderId: "716255242034",
             appId: "1:716255242034:web:b25a037869d8a9de6f992b"
         };
         firebase.initializeApp(firebaseConfig);
-        const database = firebase.database();
+        // 使用 Firestore 作為資料庫
+        const db = firebase.firestore();
         // =======================================================
 
         function createParticles() {
@@ -519,7 +517,7 @@
                 display.innerHTML = `<span style="color:var(--primary-blue); font-weight:bold;">✓ 已選擇：${file.name}</span>`;
                 document.querySelector('.file-upload-wrapper').style.borderColor = "var(--primary-blue)";
                 
-                // 使用 FileReader 產生 Base64 以供畫面上預覽
+                // 產生 Base64 預覽圖
                 const reader = new FileReader();
                 reader.onload = function(e) {
                     previewImageSrc = e.target.result;
@@ -603,7 +601,7 @@
             switchPage('confirm-page');
         }
 
-        const DRAFT_KEY = 'ltmps_gala_30_draft_v6';
+        const DRAFT_KEY = 'ltmps_gala_30_draft_v7'; // 升級本地存儲版本
 
         function saveDraft() {
             const extraNames = [];
@@ -655,6 +653,9 @@
             updateTotal();
         }
 
+        document.getElementById('registration-form').addEventListener('input', saveDraft);
+        document.getElementById('registration-form').addEventListener('change', saveDraft);
+
         window.addEventListener('DOMContentLoaded', () => {
             loadDraft();     
         });
@@ -696,15 +697,15 @@
                     payload.fileData = event.target.result.split(',')[1];
                     payload.fileName = file.name;
                     payload.mimeType = file.type;
-                    sendFetchAndSaveToFirebase(payload);
+                    sendFetchAndSaveToFirestore(payload);
                 };
                 reader.readAsDataURL(file);
             } else {
-                sendFetchAndSaveToFirebase(payload);
+                sendFetchAndSaveToFirestore(payload);
             }
         }
 
-        function sendFetchAndSaveToFirebase(payload) {
+        function sendFetchAndSaveToFirestore(payload) {
             document.getElementById('loading-overlay').classList.add('show');
             
             const scriptURL = 'https://script.google.com/macros/s/AKfycbx77jeCm1BoEI77qhXHaMB6Q-JjFvSVGEMVTYTboXdhrT1nByZj4OpTOuznWOHUWz1y/exec';
@@ -726,10 +727,8 @@
                     const extraList = JSON.parse(payload.extraAttendees);
                     const extraStr = extraList.length > 0 ? extraList.join(" , ") : "無同行者";
 
-                    const dbRef = database.ref('registrations');
-                    const newRecord = dbRef.push();
-                    
-                    newRecord.set({
+                    // ================= 將寫入語法更新為 Firestore 的 collection().add() =================
+                    db.collection('registrations').add({
                         timestamp: new Date().toISOString(),
                         contactName: payload.name,
                         contactIdentity: finalIdentity,
@@ -754,8 +753,9 @@
                     .catch(err => {
                         document.getElementById('loading-overlay').classList.remove('show');
                         alert('🎉 報名成功！確認電郵已寄出。(唯資料庫連線不穩，請聯絡校方核對)');
-                        console.error("Firebase Error: ", err);
+                        console.error("Firestore Error: ", err);
                     });
+                    // ==============================================================================
 
                 } else {
                     document.getElementById('loading-overlay').classList.remove('show');
