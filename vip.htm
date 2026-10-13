@@ -8,10 +8,10 @@
     <!-- ================= WhatsApp / 社交媒體分享預覽縮圖設定 ================= -->
     <meta name="description" content="傳承三十載．家宴慶良辰｜2026年11月27日（五）晚上7:00｜藍田循道衞理小學操場">
     <meta property="og:type" content="website">
-    <meta property="og:title" content="藍循三十周年校慶盆菜宴">
+    <meta property="og:title" content="藍循三十周年校慶盆菜宴 - 嘉賓回條">
     <meta property="og:description" content="傳承三十載．家宴慶良辰｜誠邀您共聚藍循，同賀三十周年校慶！">
-    <!-- 註：如部署到 GitHub Pages 後 WhatsApp 仍未顯示圖片，請將下方兩個 href / content 改為完整網址，例如 https://你的網域/banner.jpeg -->
     <meta property="og:image" content="https://ltmps-30th.github.io/banquet/banner.jpeg">
+    <meta property="og:image:secure_url" content="https://ltmps-30th.github.io/banquet/banner.jpeg">
     <meta property="og:image:type" content="image/jpeg">
     <meta property="og:image:width" content="1200">
     <meta property="og:image:height" content="630">
@@ -19,7 +19,7 @@
     <meta name="twitter:image" content="https://ltmps-30th.github.io/banquet/banner.jpeg">
     <link rel="image_src" href="https://ltmps-30th.github.io/banquet/banner.jpeg">
     <!-- ===================================================================== -->
-    
+
     <!-- 特效庫 -->
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
     
@@ -51,6 +51,17 @@
         body {
             background: linear-gradient(135deg, var(--deep-blue) 0%, var(--primary-blue) 100%);
             display: flex; justify-content: center; align-items: center;
+        }
+
+        /* 隱藏的縮圖層：供部分舊版通訊軟件爬蟲抓取第一張圖作為預覽 */
+        #thumb-layer {
+            position: absolute;
+            width: 0;
+            height: 0;
+            overflow: hidden;
+            opacity: 0;
+            pointer-events: none;
+            z-index: -1;
         }
 
         /* ================= 開場進場畫面 (banquet.jpeg) ================= */
@@ -294,6 +305,11 @@
 </head>
 <body>
 
+    <!-- 隱藏的 Thumb Layer (確保將完整網址的 banner.jpeg 放在 HTML 第一順位供 WhatsApp 抓取) -->
+    <div id="thumb-layer">
+        <img src="https://ltmps-30th.github.io/banquet/banner.jpeg" alt="藍循三十周年校慶盆菜宴預覽圖">
+    </div>
+
     <!-- 開場全螢幕圖片 (banquet.jpeg)，停留後自動淡出，點擊亦可直接淡出 -->
     <div id="splash-screen" onclick="hideSplashScreen()">
         <img src="banquet.jpeg" alt="藍循三十周年校慶盆菜宴" onerror="hideSplashScreen()">
@@ -313,7 +329,7 @@
         <div id="home-page" class="page active">
             <div class="content-area" style="padding-top: max(20px, env(safe-area-inset-top));">
                 <div class="hero-banner">
-                    <img src="banner.jpeg" alt="藍循三十周年校慶盆菜宴橫幅" class="main-banner-img" onerror="this.style.display='none';">
+                    <img src="https://ltmps-30th.github.io/banquet/banner.jpeg" alt="藍循三十周年校慶盆菜宴橫幅" class="main-banner-img" onerror="this.style.display='none';">
                     <h1>藍循三十周年校慶盆菜宴</h1>
                     <p style="color: var(--gold-dark); font-weight: bold; font-size: 18px; margin-bottom: 10px; letter-spacing: 1px;">傳承三十載．家宴慶良辰</p>
                 </div>
@@ -386,9 +402,9 @@
                         </div>
                     </div>
 
-                    <!-- 出席者資料 (已改為「出席者」並更新4項身份) -->
+                    <!-- 出席者 / 回覆者資料 (根據上方選擇動態切換標題) -->
                     <div class="ui-card">
-                        <div class="section-title">出席者</div>
+                        <div class="section-title" id="person-section-title">出席者</div>
                         <div class="form-group">
                             <label>姓名 *</label>
                             <input type="text" id="contact-name" required placeholder="請輸入姓名" oninput="updateReceiptFromContact(); saveDraft();">
@@ -414,7 +430,7 @@
                         </div>
                     </div>
 
-                    <!-- 捐款欄位 (已由「額外捐款」改為「捐款」) -->
+                    <!-- 捐款欄位 -->
                     <div class="ui-card">
                         <div class="section-title">捐款支持 (隨喜贊助)</div>
                         <div class="form-group" style="margin-bottom: 0;">
@@ -434,7 +450,7 @@
                             <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
                                 <label style="margin:0;">付款收據抬頭 *</label>
                                 <label style="font-size:13px; color:var(--primary-blue); cursor:pointer; font-weight:bold; display:flex; align-items:center; margin:0;">
-                                    <input type="checkbox" id="same-as-contact-checkbox" onchange="copyContactToReceipt()" style="width:16px; height:16px; margin:0 6px 0 0; cursor:pointer;"> 與出席者相同
+                                    <input type="checkbox" id="same-as-contact-checkbox" onchange="copyContactToReceipt()" style="width:16px; height:16px; margin:0 6px 0 0; cursor:pointer;"> <span id="same-as-person-text">與出席者相同</span>
                                 </label>
                             </div>
                             <input type="text" id="receipt-title" placeholder="請填寫收據抬頭 (例如機構或個人名稱)" oninput="saveDraft()">
@@ -591,7 +607,7 @@
             document.getElementById(pageId).scrollTop = 0;
         }
 
-        // 出席意向切換
+        // 切換出席意向，同時動態更改下方標題為「出席者」或「回覆者資料」
         function selectAttendance(status) {
             const radios = document.getElementsByName('attendanceStatus');
             radios.forEach(r => {
@@ -600,13 +616,19 @@
 
             const yesCard = document.getElementById('att-card-yes');
             const noCard = document.getElementById('att-card-no');
+            const personTitle = document.getElementById('person-section-title');
+            const samePersonText = document.getElementById('same-as-person-text');
 
             if (status === '將會出席') {
                 yesCard.classList.add('selected-attend');
                 noCard.classList.remove('selected-decline');
+                personTitle.innerText = '出席者';
+                if (samePersonText) samePersonText.innerText = '與出席者相同';
             } else {
                 yesCard.classList.remove('selected-attend');
                 noCard.classList.add('selected-decline');
+                personTitle.innerText = '回覆者資料';
+                if (samePersonText) samePersonText.innerText = '與回覆者相同';
             }
             saveDraft();
         }
@@ -645,7 +667,6 @@
             }
         }
 
-        // 切換付款方式時，動態更新上載證明的必填提示
         function selectPaymentMethod(method) {
             const radios = document.getElementsByName('paymentMethod');
             radios.forEach(r => {
@@ -676,7 +697,6 @@
             return checked ? checked.value : '銀行轉帳';
         }
 
-        // 根據捐款金額動態展開/收合「收據及付款詳情」
         function updateTotal() {
             const donation = parseInt(document.getElementById('extra-donation').value) || 0;
             const totalTag = document.getElementById('display-total');
@@ -726,7 +746,6 @@
             const payment_method = getSelectedPaymentMethod();
             const fileInput = document.getElementById('payment-proof');
 
-            // 【核心防呆驗證】若有填寫捐款且選擇「銀行轉帳」，強制檢查是否已上載圖片
             if (donation > 0 && payment_method === '銀行轉帳' && fileInput.files.length === 0) {
                 alert('⚠️ 您選擇了「銀行轉帳」進行捐款，請先上載入數截圖或櫃員機收據照片方可提交！');
                 const uploadBox = document.getElementById('file-upload-box');
@@ -738,6 +757,7 @@
             saveDraft();
 
             const attendance_status = getSelectedAttendance();
+            const personHeaderTitle = (attendance_status === '將會出席') ? '出席者' : '回覆者資料';
             const c_id = document.getElementById('contact-identity').value;
             const c_id_other = document.getElementById('contact-identity-other').value;
             const final_c_id = (c_id === '其他' && c_id_other) ? `其他 (${c_id_other})` : c_id;
@@ -754,7 +774,7 @@
 
             let summaryHTML = `
                 <div class="ui-card">
-                    <h4 style="color:var(--primary-blue); margin-top:0; margin-bottom:15px; border-bottom:2px solid #f0f0f0; padding-bottom:10px;">出席者資料</h4>
+                    <h4 style="color:var(--primary-blue); margin-top:0; margin-bottom:15px; border-bottom:2px solid #f0f0f0; padding-bottom:10px;">${personHeaderTitle}</h4>
                     <div class="summary-row"><span class="summary-label">出席意向</span><span class="summary-value" style="color:${statusColor}; font-size:15px;">本人 ${attendance_status}</span></div>
                     <div class="summary-row"><span class="summary-label">姓名</span><span class="summary-value">${c_name}</span></div>
                     <div class="summary-row"><span class="summary-label">身份</span><span class="summary-value">${final_c_id}</span></div>
@@ -796,7 +816,7 @@
             switchPage('confirm-page');
         }
 
-        const DRAFT_KEY = 'ltmps_gala_30_vip_draft_v1';
+        const DRAFT_KEY = 'ltmps_gala_30_vip_draft_v3';
 
         function saveDraft() {
             const draft = {
@@ -864,7 +884,6 @@
             const donation = parseInt(document.getElementById('extra-donation').value) || 0;
             const paymentMethod = donation > 0 ? getSelectedPaymentMethod() : "無需付款";
 
-            // 二次安全檢查：若有捐款且選擇銀行轉帳，必定要上載圖片
             if (donation > 0 && paymentMethod === '銀行轉帳' && fileInput.files.length === 0) {
                 alert('⚠️ 選擇銀行轉帳必須上載付款證明！');
                 switchPage('form-page');
@@ -927,7 +946,6 @@
                         ? `其他 (${payload.contactIdentityOther})` 
                         : payload.contactIdentity;
 
-                    // 完整同步寫入 Firestore (包含 attendance、receiptRequest 及 paymentMethod)
                     db.collection('registrations').add({
                         timestamp: new Date().toISOString(),
                         formType: payload.formType,
