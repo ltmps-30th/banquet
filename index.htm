@@ -4,14 +4,14 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>藍循三十周年校慶盆菜宴</title>
-    
+
     <!-- ================= WhatsApp / 社交媒體分享預覽縮圖設定 ================= -->
     <meta name="description" content="傳承三十載．家宴慶良辰｜2026年11月27日（五）晚上7:00｜藍田循道衞理小學操場">
     <meta property="og:type" content="website">
     <meta property="og:title" content="藍循三十周年校慶盆菜宴">
     <meta property="og:description" content="傳承三十載．家宴慶良辰｜誠邀您共聚藍循，同賀三十周年校慶！">
-    <!-- 註：如部署到 GitHub Pages 後 WhatsApp 仍未顯示圖片，請將下方兩個 href / content 改為完整網址，例如 https://你的網域/banner.jpeg -->
     <meta property="og:image" content="https://ltmps-30th.github.io/banquet/banner.jpeg">
+    <meta property="og:image:secure_url" content="https://ltmps-30th.github.io/banquet/banner.jpeg">
     <meta property="og:image:type" content="image/jpeg">
     <meta property="og:image:width" content="1200">
     <meta property="og:image:height" content="630">
@@ -19,7 +19,7 @@
     <meta name="twitter:image" content="https://ltmps-30th.github.io/banquet/banner.jpeg">
     <link rel="image_src" href="https://ltmps-30th.github.io/banquet/banner.jpeg">
     <!-- ===================================================================== -->
-    
+
     <!-- 特效庫 -->
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
     
@@ -51,6 +51,17 @@
         body {
             background: linear-gradient(135deg, var(--deep-blue) 0%, var(--primary-blue) 100%);
             display: flex; justify-content: center; align-items: center;
+        }
+
+        /* 隱藏的縮圖層：供部分通訊軟件爬蟲抓取第一張圖作為預覽 */
+        #thumb-layer {
+            position: absolute;
+            width: 0;
+            height: 0;
+            overflow: hidden;
+            opacity: 0;
+            pointer-events: none;
+            z-index: -1;
         }
 
         /* ================= 開場進場畫面 (banquet.jpeg) ================= */
@@ -189,6 +200,16 @@
         }
         input:focus, select:focus, textarea:focus { border-color: var(--primary-blue); outline: none; background: white; box-shadow: 0 0 0 3px rgba(0, 51, 160, 0.1); }
         
+        /* 隱藏數字輸入框預設的上下加減箭咀 (+1 / -1) */
+        input[type="number"]::-webkit-outer-spin-button,
+        input[type="number"]::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+        input[type="number"] {
+            -moz-appearance: textfield;
+        }
+
         select {
             background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%230033A0%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22%2F%3E%3C%2Fsvg%3E");
             background-repeat: no-repeat; background-position: right 15px center; background-size: 12px auto; padding-right: 40px;
@@ -266,6 +287,11 @@
 </head>
 <body>
 
+    <!-- 隱藏的 Thumb Layer (確保將完整網址的 banner.jpeg 放在 HTML 第一順位供 WhatsApp 抓取) -->
+    <div id="thumb-layer">
+        <img src="https://ltmps-30th.github.io/banquet/banner.jpeg" alt="藍循三十周年校慶盆菜宴預覽圖">
+    </div>
+
     <!-- 開場全螢幕圖片 (banquet.jpeg)，停留後自動淡出，點擊亦可直接淡出 -->
     <div id="splash-screen" onclick="hideSplashScreen()">
         <img src="banquet.jpeg" alt="藍循三十周年校慶盆菜宴" onerror="hideSplashScreen()">
@@ -285,7 +311,7 @@
         <div id="home-page" class="page active">
             <div class="content-area" style="padding-top: max(20px, env(safe-area-inset-top));">
                 <div class="hero-banner">
-                    <img src="banner.jpeg" alt="藍循三十周年校慶盆菜宴橫幅" class="main-banner-img" onerror="this.style.display='none';">
+                    <img src="https://ltmps-30th.github.io/banquet/banner.jpeg" alt="藍循三十周年校慶盆菜宴橫幅" class="main-banner-img" onerror="this.style.display='none';">
                     <h1>藍循三十周年校慶盆菜宴</h1>
                     <p style="color: var(--gold-dark); font-weight: bold; font-size: 18px; margin-bottom: 10px; letter-spacing: 1px;">傳承三十載．家宴慶良辰</p>
                 </div>
@@ -392,10 +418,10 @@
                         <button type="button" class="btn btn-table" onclick="fillFullTable()">🎉 團體包圍：一鍵加滿至 12 人 (HK$ 2,520)</button>
                     </div>
 
-                    <!-- 額外捐款與動態計算的金額提示 -->
+                    <!-- 額外捐款 (已移除上下加減箭咀並防止滾輪誤觸) -->
                     <div class="form-group" style="margin-bottom: 20px;">
                         <label style="color:var(--gold-dark); font-size:15px;">💖 額外捐款 (HK$)</label>
-                        <input type="number" id="extra-donation" min="0" placeholder="填寫金額 (可留空)" oninput="updateTotal(); saveDraft();">
+                        <input type="number" id="extra-donation" min="0" inputmode="numeric" pattern="[0-9]*" placeholder="填寫金額 (可留空)" oninput="updateTotal(); saveDraft();" onwheel="this.blur()">
                     </div>
 
                     <div class="total-price-tag" id="display-total">應付總額：HK$ 220 (個人 1 席)</div>
@@ -814,7 +840,7 @@
             switchPage('confirm-page');
         }
 
-        const DRAFT_KEY = 'ltmps_gala_30_draft_v10';
+        const DRAFT_KEY = 'ltmps_gala_30_draft_v11';
 
         function saveDraft() {
             const extraNames = [];
@@ -902,6 +928,7 @@
             const tierType = (totalPax === 12) ? "團體 (1圍12席)" : `個人 (${totalPax}席)`;
 
             const payload = {
+                formType: "校友報名",
                 name: document.getElementById('contact-name').value,
                 phone: document.getElementById('contact-phone').value,
                 email: document.getElementById('contact-email').value,
@@ -958,6 +985,7 @@
                     // 完整同步寫入 Firestore (包含 receiptRequest 及 paymentMethod)
                     db.collection('registrations').add({
                         timestamp: new Date().toISOString(),
+                        formType: payload.formType,
                         contactName: payload.name,
                         contactIdentity: finalIdentity,
                         contactPhone: payload.phone,
