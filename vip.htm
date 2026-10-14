@@ -55,41 +55,19 @@
 
         /* 隱藏的縮圖層：供部分舊版通訊軟件爬蟲抓取第一張圖作為預覽 */
         #thumb-layer {
-            position: absolute;
-            width: 0;
-            height: 0;
-            overflow: hidden;
-            opacity: 0;
-            pointer-events: none;
-            z-index: -1;
+            position: absolute; width: 0; height: 0; overflow: hidden; opacity: 0; pointer-events: none; z-index: -1;
         }
 
-        /* ================= 開場進場畫面 (banquet.jpeg) ================= */
+        /* ================= 開場進場畫面 ================= */
         #splash-screen {
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background-color: var(--deep-blue);
-            z-index: 9999;
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background-color: var(--deep-blue); z-index: 9999;
             display: flex; justify-content: center; align-items: center;
-            transition: opacity 1.2s cubic-bezier(0.4, 0, 0.2, 1), visibility 1.2s;
-            cursor: pointer;
+            transition: opacity 1.2s cubic-bezier(0.4, 0, 0.2, 1), visibility 1.2s; cursor: pointer;
         }
-        #splash-screen.fade-out {
-            opacity: 0;
-            visibility: hidden;
-            pointer-events: none;
-        }
-        #splash-screen img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            animation: splashZoom 3s ease-out forwards;
-        }
-        @keyframes splashZoom {
-            from { transform: scale(1); }
-            to { transform: scale(1.06); }
-        }
-        /* ============================================================== */
+        #splash-screen.fade-out { opacity: 0; visibility: hidden; pointer-events: none; }
+        #splash-screen img { width: 100%; height: 100%; object-fit: cover; animation: splashZoom 3s ease-out forwards; }
+        @keyframes splashZoom { from { transform: scale(1); } to { transform: scale(1.06); } }
 
         /* 夜空與流星特效 */
         #particles { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 0; pointer-events: none; overflow: hidden;}
@@ -153,14 +131,8 @@
         /* 首頁橫幅與標題設定 */
         .hero-banner { text-align: center; margin-bottom: 20px; margin-top: 5px; }
         .main-banner-img {
-            width: 100%;
-            height: auto;
-            max-height: 220px;
-            object-fit: cover;
-            border-radius: 16px;
-            margin-bottom: 16px;
-            box-shadow: 0 6px 20px rgba(0, 51, 160, 0.12);
-            display: block;
+            width: 100%; height: auto; max-height: 220px; object-fit: cover;
+            border-radius: 16px; margin-bottom: 16px; box-shadow: 0 6px 20px rgba(0, 51, 160, 0.12); display: block;
         }
         .hero-banner h1 { color: var(--primary-blue); font-size: 26px; font-weight: 900; margin-bottom: 8px; }
 
@@ -172,7 +144,6 @@
         .info-item { margin-bottom: 15px; font-size: 15px; display: flex; align-items: flex-start; border-bottom: 1px dashed #f0f0f0; padding-bottom: 12px; }
         .info-item:last-child { margin-bottom: 0; border-bottom: none; padding-bottom: 0; }
         .icon { width: 32px; height: 32px; background: rgba(212, 175, 55, 0.15); border-radius: 50%; display: flex; justify-content: center; align-items: center; margin-right: 15px; font-size: 14px; flex-shrink: 0; margin-top: 2px; }
-
         .program-list { margin: 4px 0 0 0; padding-left: 18px; color: #333; font-weight: bold; font-size: 14px; line-height: 1.7; }
 
         .btn { 
@@ -188,30 +159,20 @@
         .form-group { margin-bottom: 18px; }
         label { display: block; font-weight: bold; color: #444; font-size: 14px; margin-bottom: 8px; }
         
-        input[type="text"], input[type="tel"], input[type="email"], input[type="number"], select, textarea { 
+        input[type="text"], input[type="tel"], input[type="email"], input[type="number"] { 
             width: 100%; max-width: 100%; display: block; box-sizing: border-box; 
             padding: 14px 15px; border: 1.5px solid #dce2e8; border-radius: 12px; 
             font-size: 16px; background: #fdfdfd; transition: all 0.3s; 
             -webkit-appearance: none; appearance: none; margin: 0;
         }
-        input:focus, select:focus, textarea:focus { border-color: var(--primary-blue); outline: none; background: white; box-shadow: 0 0 0 3px rgba(0, 51, 160, 0.1); }
+        input:focus { border-color: var(--primary-blue); outline: none; background: white; box-shadow: 0 0 0 3px rgba(0, 51, 160, 0.1); }
         
-        /* 隱藏數字輸入框預設的上下加減箭咀 (+1 / -1) */
+        /* 隱藏數字輸入框上下加減箭咀 */
         input[type="number"]::-webkit-outer-spin-button,
-        input[type="number"]::-webkit-inner-spin-button {
-            -webkit-appearance: none;
-            margin: 0;
-        }
-        input[type="number"] {
-            -moz-appearance: textfield;
-        }
+        input[type="number"]::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+        input[type="number"] { -moz-appearance: textfield; }
 
-        select {
-            background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%230033A0%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22%2F%3E%3C%2Fsvg%3E");
-            background-repeat: no-repeat; background-position: right 15px center; background-size: 12px auto; padding-right: 40px;
-        }
-
-        /* 出席意向雙按鈕設計 */
+        /* 出席意向設計 */
         .attendance-options {
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -249,6 +210,17 @@
             box-shadow: 0 4px 12px rgba(212, 175, 55, 0.15);
         }
 
+        /* 捐款橫向快捷選項按鈕 */
+        .donation-chips {
+            display: flex; gap: 8px; margin-bottom: 12px; flex-wrap: wrap;
+        }
+        .don-chip {
+            flex: 1 1 calc(33.333% - 8px); text-align: center; border: 1.5px solid #dce2e8; border-radius: 20px;
+            padding: 10px 5px; font-weight: bold; color: #555; cursor: pointer; transition: all 0.2s; font-size: 15px;
+            background: #fdfdfd;
+        }
+        .don-chip:active { transform: scale(0.95); }
+
         /* 可選擇的付款方式卡片 */
         .payment-option-card {
             border: 1.5px solid #dce2e8; border-radius: 12px; padding: 15px; margin-bottom: 12px;
@@ -277,12 +249,6 @@
         .summary-row:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
         .summary-label { color: #888; width: 38%; }
         .summary-value { color: #333; font-weight: bold; width: 62%; text-align: right; word-break: break-word; }
-        
-        .total-price-tag { 
-            text-align: center; font-size: 19px; color: var(--primary-blue); font-weight: 900; 
-            background: rgba(0,51,160,0.05); padding: 15px; border-radius: 12px; border: 1px solid rgba(0,51,160,0.1); 
-            margin-bottom: 20px; transition: 0.3s; line-height: 1.5;
-        }
 
         .draft-notice { background: rgba(212, 175, 55, 0.15); color: var(--gold-dark); text-align: center; padding: 12px; font-size: 14px; font-weight: bold; border-radius: 12px; margin-bottom: 15px; display: none; }
 
@@ -293,15 +259,12 @@
             z-index: 100; opacity: 0; visibility: hidden; transition: 0.3s; 
         }
         #loading-overlay.show { opacity: 1; visibility: visible; }
-        
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
         .loader-ring { 
-            width: 55px; height: 55px; 
-            border: 5px solid rgba(0, 51, 160, 0.1); 
+            width: 55px; height: 55px; border: 5px solid rgba(0, 51, 160, 0.1); 
             border-top-color: var(--primary-blue); border-left-color: var(--gold-main); 
             border-radius: 50%; animation: spin 1s linear infinite; 
         }
-        
         @keyframes pulseText { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
         .pulse-text { animation: pulseText 1.5s infinite; }
 
@@ -320,7 +283,7 @@
         <img src="https://ltmps-30th.github.io/banquet/banner.jpeg" alt="藍循三十周年校慶盆菜宴預覽圖">
     </div>
 
-    <!-- 開場全螢幕圖片 (banquet.jpeg)，停留後自動淡出，點擊亦可直接淡出 -->
+    <!-- 開場全螢幕圖片 -->
     <div id="splash-screen" onclick="hideSplashScreen()">
         <img src="banquet.jpeg" alt="藍循三十周年校慶盆菜宴" onerror="hideSplashScreen()">
     </div>
@@ -331,11 +294,11 @@
         <!-- 載入中遮罩 -->
         <div id="loading-overlay">
             <div class="loader-ring"></div>
-            <h3 style="margin-top: 25px; color: var(--primary-blue); font-size: 18px;">資料上載中...</h3>
+            <h3 style="margin-top: 25px; color: var(--primary-blue); font-size: 18px;">資料處理中...</h3>
             <p class="pulse-text" style="color: #888; font-size: 14px; margin-top: 10px; font-weight:bold;">請勿關閉視窗，這可能需要幾秒鐘 ⏳</p>
         </div>
 
-        <!-- 1. 首頁 (已刪除費用項目) -->
+        <!-- 1. 首頁 -->
         <div id="home-page" class="page active">
             <div class="content-area" style="padding-top: max(20px, env(safe-area-inset-top));">
                 <div class="hero-banner">
@@ -378,7 +341,7 @@
             </div>
 
             <div class="sticky-bottom">
-                <button class="btn" onclick="switchPage('form-page')">立即填寫報名表</button>
+                <button class="btn" onclick="switchPage('form-page')">立即回覆回條</button>
             </div>
         </div>
 
@@ -386,7 +349,7 @@
         <div id="form-page" class="page">
             <div class="app-header">
                 <button class="back-btn" onclick="switchPage('home-page')">❮ 返回</button>
-                <h2>報名表</h2>
+                <h2>回覆回條</h2>
                 <div style="width: 75px;"></div>
             </div>
 
@@ -395,40 +358,29 @@
 
                 <form id="registration-form" onsubmit="event.preventDefault(); goToConfirm();">
                     
-                    <!-- 第一項選項：出席意向 -->
+                    <!-- 出席意向 -->
                     <div class="ui-card">
                         <div class="section-title">出席意向 *</div>
                         <div class="attendance-options">
                             <label class="attendance-card selected-attend" id="att-card-yes" onclick="selectAttendance('將會出席')">
-                                <input type="radio" name="attendanceStatus" value="將會出席" checked onchange="selectAttendance('將會出席')">
+                                <input type="radio" name="attendanceStatus" value="將會出席" checked>
                                 <span style="font-size: 22px;">🎉</span>
                                 <span>本人 將會出席</span>
                             </label>
                             <label class="attendance-card" id="att-card-no" onclick="selectAttendance('未克出席')">
-                                <input type="radio" name="attendanceStatus" value="未克出席" onchange="selectAttendance('未克出席')">
+                                <input type="radio" name="attendanceStatus" value="未克出席">
                                 <span style="font-size: 22px;">🙏</span>
                                 <span>本人 未克出席</span>
                             </label>
                         </div>
                     </div>
 
-                    <!-- 出席者 / 回覆者資料 (根據上方選擇動態切換標題) -->
+                    <!-- 出席者 / 回覆者資料 -->
                     <div class="ui-card">
                         <div class="section-title" id="person-section-title">出席者</div>
                         <div class="form-group">
                             <label>姓名 *</label>
                             <input type="text" id="contact-name" required placeholder="請輸入姓名" oninput="updateReceiptFromContact(); saveDraft();">
-                        </div>
-                        <div class="form-group">
-                            <label>身份 *</label>
-                            <select id="contact-identity" required onchange="toggleOtherInput()">
-                                <option value="">請選擇身份</option>
-                                <option value="校董/校監">校董/校監</option>
-                                <option value="友校校董/校監/校長/教師">友校校董/校監/校長/教師</option>
-                                <option value="離任校長/教師">離任校長/教師</option>
-                                <option value="其他">其他</option>
-                            </select>
-                            <input type="text" id="contact-identity-other" placeholder="請註明其他身份" style="display:none; margin-top:10px;" oninput="saveDraft()">
                         </div>
                         <div class="form-group">
                             <label>聯絡電話 *</label>
@@ -440,19 +392,24 @@
                         </div>
                     </div>
 
-                    <!-- 捐款欄位 (已移除上下加減箭咀並防止滾輪誤觸) -->
+                    <!-- 捐款欄位 (快捷按鈕 + 自行輸入) -->
                     <div class="ui-card">
-                        <div class="section-title">捐款支持 (隨喜贊助)</div>
+                        <div class="section-title">捐款支持</div>
+                        <label style="color:#888; font-size:13px; margin-bottom:8px; display:block;">選擇捐款金額 (如不捐款請留空)</label>
+                        
+                        <div class="donation-chips">
+                            <div class="don-chip" onclick="setDonation(800)">HK$ 800</div>
+                            <div class="don-chip" onclick="setDonation(1000)">HK$ 1000</div>
+                            <div class="don-chip" onclick="setDonation(1500)">HK$ 1500</div>
+                            <div class="don-chip" onclick="setDonation('')" style="color:var(--danger-color); border-color:var(--danger-color);">清空重設</div>
+                        </div>
+
                         <div class="form-group" style="margin-bottom: 0;">
-                            <label style="color:var(--gold-dark); font-size:15px;">💖 捐款 (HK$)</label>
-                            <input type="number" id="extra-donation" min="0" inputmode="numeric" pattern="[0-9]*" placeholder="填寫捐款金額 (如不捐款可留空)" oninput="updateTotal(); saveDraft();" onwheel="this.blur()">
+                            <input type="number" id="extra-donation" min="0" inputmode="numeric" pattern="[0-9]*" placeholder="自訂金額 (HK$)" oninput="updatePaymentSection(); saveDraft();" onwheel="this.blur()">
                         </div>
                     </div>
 
-                    <!-- 動態計算的金額提示 (有輸入捐款時顯示) -->
-                    <div class="total-price-tag" id="display-total" style="display:none;">捐款總額：HK$ 0</div>
-
-                    <!-- 付款及收據卡片 (當有輸入捐款金額 > 0 時自動展開) -->
+                    <!-- 付款及收據卡片 (當捐款金額 > 0 時自動展開) -->
                     <div class="ui-card" id="payment-section-card" style="display:none;">
                         <div class="section-title">收據及付款詳情</div>
                         
@@ -466,25 +423,23 @@
                             <input type="text" id="receipt-title" placeholder="請填寫收據抬頭 (例如機構或個人名稱)" oninput="saveDraft()">
                         </div>
 
-                        <!-- 收據特別請求 -->
                         <div class="form-group" style="margin-bottom:22px;">
                             <label>如對收據抬頭有特別請求，請註明</label>
                             <input type="text" id="receipt-request" placeholder="例如：需分開收據或其他備註 (可留空)" oninput="saveDraft()">
                         </div>
 
-                        <!-- 可供選擇的付款方式 -->
                         <div class="form-group" style="margin-bottom:20px;">
                             <label style="font-size:15px; color:var(--primary-blue); margin-bottom:12px;">💳 請選擇付款方式 *</label>
                             
                             <label class="payment-option-card selected" id="pay-card-bank" onclick="selectPaymentMethod('銀行轉帳')">
                                 <div class="payment-option-header">
-                                    <input type="radio" name="paymentMethod" value="銀行轉帳" checked onchange="selectPaymentMethod('銀行轉帳')">
+                                    <input type="radio" name="paymentMethod" value="銀行轉帳" checked>
                                     1. 銀行轉帳（電子轉帳 / 櫃員機轉帳）
                                 </div>
                                 <div class="payment-option-details">
                                     銀行：滙豐銀行 (銀行編號：004)<br>
                                     戶口號碼：<strong>456-450485-001</strong><br>
-                                    戶口名稱：藍田循道衛理小學法團校董會<br>
+                                    戶口名稱：藍田循道衞理小學法團校董會<br>
                                     或 The IMC of Lam Tin Methodist Primary School
                                     <span class="highlight-note">註：請保留電子轉帳的入數截圖 或 櫃員機入數紙照片，並於下方上傳。</span>
                                 </div>
@@ -492,11 +447,11 @@
 
                             <label class="payment-option-card" id="pay-card-cheque" onclick="selectPaymentMethod('支票')">
                                 <div class="payment-option-header">
-                                    <input type="radio" name="paymentMethod" value="支票" onchange="selectPaymentMethod('支票')">
+                                    <input type="radio" name="paymentMethod" value="支票">
                                     2. 支票
                                 </div>
                                 <div class="payment-option-details">
-                                    支票抬頭：藍田循道衛理小學法團校董會<br>
+                                    支票抬頭：藍田循道衞理小學法團校董會<br>
                                     或 The IMC of Lam Tin Methodist Primary School<br>
                                     支票背面請寫上姓名、電話及「藍循30周年盆菜宴」以資識別。
                                     <span class="highlight-note">註：直接到校遞交或郵寄：九龍藍田平田邨安田街 藍田循道衞理小學 梁校長收</span>
@@ -505,7 +460,7 @@
 
                             <label class="payment-option-card" id="pay-card-cash" onclick="selectPaymentMethod('現金')">
                                 <div class="payment-option-header">
-                                    <input type="radio" name="paymentMethod" value="現金" onchange="selectPaymentMethod('現金')">
+                                    <input type="radio" name="paymentMethod" value="現金">
                                     3. 現金
                                 </div>
                                 <div class="payment-option-details">
@@ -564,7 +519,6 @@
             setTimeout(hideSplashScreen, 1800);
         });
         setTimeout(hideSplashScreen, 3200);
-        // ====================================================
 
         // ================= Firebase (Firestore) 初始化設定 =================
         const firebaseConfig = {
@@ -577,7 +531,6 @@
         };
         firebase.initializeApp(firebaseConfig);
         const db = firebase.firestore();
-        // =======================================================
 
         function createParticles() {
             const container = document.getElementById('particles');
@@ -601,13 +554,6 @@
                 meteor.style.animationDelay = (Math.random() * 15) + 's';
                 container.appendChild(meteor);
             }
-            let firstMeteor = document.createElement('div');
-            firstMeteor.className = 'meteor';
-            firstMeteor.style.top = '-10vh';
-            firstMeteor.style.left = '70vw';
-            firstMeteor.style.animationDuration = '12s'; 
-            firstMeteor.style.animationDelay = '1s';
-            container.appendChild(firstMeteor);
         }
         createParticles();
 
@@ -617,12 +563,9 @@
             document.getElementById(pageId).scrollTop = 0;
         }
 
-        // 切換出席意向，同時動態更改下方標題為「出席者」或「回覆者資料」
+        // ================= 互動選擇邏輯 =================
         function selectAttendance(status) {
-            const radios = document.getElementsByName('attendanceStatus');
-            radios.forEach(r => {
-                if (r.value === status) r.checked = true;
-            });
+            document.getElementsByName('attendanceStatus').forEach(r => { if (r.value === status) r.checked = true; });
 
             const yesCard = document.getElementById('att-card-yes');
             const noCard = document.getElementById('att-card-no');
@@ -648,18 +591,16 @@
             return checked ? checked.value : '將會出席';
         }
 
-        function toggleOtherInput() {
-            const select = document.getElementById('contact-identity');
-            const otherInput = document.getElementById('contact-identity-other');
-            if (select.value === '其他') {
-                otherInput.style.display = 'block';
-                otherInput.required = true;
-            } else {
-                otherInput.style.display = 'none';
-                otherInput.required = false;
-                otherInput.value = '';
-            }
+        // === 新增：捷徑捐款按鈕寫入輸入框 ===
+        function setDonation(amount) {
+            const donationInput = document.getElementById('extra-donation');
+            donationInput.value = amount;
+            updatePaymentSection();
             saveDraft();
+        }
+
+        function getDonationAmount() {
+            return parseInt(document.getElementById('extra-donation').value) || 0;
         }
 
         function copyContactToReceipt() {
@@ -678,10 +619,7 @@
         }
 
         function selectPaymentMethod(method) {
-            const radios = document.getElementsByName('paymentMethod');
-            radios.forEach(r => {
-                if (r.value === method) r.checked = true;
-            });
+            document.getElementsByName('paymentMethod').forEach(r => { if (r.value === method) r.checked = true; });
 
             document.getElementById('pay-card-bank').classList.toggle('selected', method === '銀行轉帳');
             document.getElementById('pay-card-cheque').classList.toggle('selected', method === '支票');
@@ -698,7 +636,6 @@
                 uploadLabel.style.color = '#444';
                 uploadBox.classList.remove('error-border');
             }
-
             saveDraft();
         }
 
@@ -707,19 +644,15 @@
             return checked ? checked.value : '銀行轉帳';
         }
 
-        function updateTotal() {
-            const donation = parseInt(document.getElementById('extra-donation').value) || 0;
-            const totalTag = document.getElementById('display-total');
+        function updatePaymentSection() {
+            const donation = getDonationAmount();
             const paymentCard = document.getElementById('payment-section-card');
             const receiptTitleInput = document.getElementById('receipt-title');
 
             if (donation > 0) {
-                totalTag.style.display = 'block';
-                totalTag.innerText = `應付捐款總額：HK$ ${donation}`;
                 paymentCard.style.display = 'block';
                 receiptTitleInput.required = true;
             } else {
-                totalTag.style.display = 'none';
                 paymentCard.style.display = 'none';
                 receiptTitleInput.required = false;
             }
@@ -727,7 +660,6 @@
 
         // ================= 圖片預覽功能 =================
         let previewImageSrc = "";
-
         function updateFileName(input) {
             const display = document.getElementById('file-name-display');
             const uploadBox = document.getElementById('file-upload-box');
@@ -738,21 +670,18 @@
                 uploadBox.style.borderColor = "var(--primary-blue)";
                 
                 const reader = new FileReader();
-                reader.onload = function(e) {
-                    previewImageSrc = e.target.result;
-                };
+                reader.onload = function(e) { previewImageSrc = e.target.result; };
                 reader.readAsDataURL(file);
-
             } else {
                 display.innerHTML = '📁 點擊上載截圖<br><span style="font-size:12px;">(支援 JPG, PNG)</span>';
                 uploadBox.style.borderColor = "var(--gold-main)";
                 previewImageSrc = "";
             }
         }
-        // ===============================================
 
+        // ================= 進入確認畫面 =================
         function goToConfirm() {
-            const donation = parseInt(document.getElementById('extra-donation').value) || 0;
+            const donation = getDonationAmount();
             const payment_method = getSelectedPaymentMethod();
             const fileInput = document.getElementById('payment-proof');
 
@@ -768,16 +697,11 @@
 
             const attendance_status = getSelectedAttendance();
             const personHeaderTitle = (attendance_status === '將會出席') ? '出席者' : '回覆者資料';
-            const c_id = document.getElementById('contact-identity').value;
-            const c_id_other = document.getElementById('contact-identity-other').value;
-            const final_c_id = (c_id === '其他' && c_id_other) ? `其他 (${c_id_other})` : c_id;
-            
             const c_name = document.getElementById('contact-name').value;
             const c_phone = document.getElementById('contact-phone').value;
             const c_email = document.getElementById('contact-email').value;
             const receipt_title = document.getElementById('receipt-title').value;
             const receipt_request = document.getElementById('receipt-request').value.trim();
-            
             const fileName = fileInput.files.length > 0 ? fileInput.files[0].name : '未上載';
 
             let statusColor = (attendance_status === '將會出席') ? 'var(--primary-blue)' : 'var(--gold-dark)';
@@ -787,7 +711,6 @@
                     <h4 style="color:var(--primary-blue); margin-top:0; margin-bottom:15px; border-bottom:2px solid #f0f0f0; padding-bottom:10px;">${personHeaderTitle}</h4>
                     <div class="summary-row"><span class="summary-label">出席意向</span><span class="summary-value" style="color:${statusColor}; font-size:15px;">本人 ${attendance_status}</span></div>
                     <div class="summary-row"><span class="summary-label">姓名</span><span class="summary-value">${c_name}</span></div>
-                    <div class="summary-row"><span class="summary-label">身份</span><span class="summary-value">${final_c_id}</span></div>
                     <div class="summary-row"><span class="summary-label">電話</span><span class="summary-value">${c_phone}</span></div>
                     <div class="summary-row"><span class="summary-label">電郵</span><span class="summary-value">${c_email}</span></div>
                 </div>
@@ -802,7 +725,7 @@
                 summaryHTML += `
                     <div class="ui-card">
                         <h4 style="color:var(--primary-blue); margin-top:0; margin-bottom:15px; border-bottom:2px solid #f0f0f0; padding-bottom:10px;">捐款及收據詳情</h4>
-                        <div class="summary-row"><span class="summary-label">捐款金額</span><span class="summary-value" style="color:var(--gold-dark);">HK$ ${donation}</span></div>
+                        <div class="summary-row"><span class="summary-label">捐款金額</span><span class="summary-value" style="color:var(--gold-dark); font-size:16px;">HK$ ${donation}</span></div>
                         <div class="summary-row"><span class="summary-label">收據抬頭</span><span class="summary-value">${receipt_title}</span></div>
                         <div class="summary-row"><span class="summary-label">收據特別請求</span><span class="summary-value">${receipt_request || "無"}</span></div>
                         <div class="summary-row"><span class="summary-label">付款方式</span><span class="summary-value" style="color:var(--primary-blue);">${payment_method}</span></div>
@@ -810,14 +733,13 @@
                             <span class="summary-label" style="width:100%; text-align:left; margin-bottom:8px;">付款證明</span>
                             <span class="summary-value" style="width:100%;">${proofDisplay}</span>
                         </div>
-                        <div class="total-price-tag" style="margin-top:20px; font-size:18px;">捐款總額：HK$ ${donation}</div>
                     </div>
                 `;
             } else {
                 summaryHTML += `
                     <div class="ui-card">
                         <h4 style="color:var(--primary-blue); margin-top:0; margin-bottom:15px; border-bottom:2px solid #f0f0f0; padding-bottom:10px;">捐款詳情</h4>
-                        <div class="summary-row" style="border:none; margin:0; padding:0;"><span class="summary-label">捐款金額</span><span class="summary-value">無</span></div>
+                        <div class="summary-row" style="border:none; margin:0; padding:0;"><span class="summary-label">捐款金額</span><span class="summary-value">不作捐款</span></div>
                     </div>
                 `;
             }
@@ -826,14 +748,12 @@
             switchPage('confirm-page');
         }
 
-        const DRAFT_KEY = 'ltmps_gala_30_vip_draft_v4';
+        const DRAFT_KEY = 'ltmps_gala_30_vip_draft_v7';
 
         function saveDraft() {
             const draft = {
                 attendance: getSelectedAttendance(),
                 cName: document.getElementById('contact-name').value,
-                cIdentity: document.getElementById('contact-identity').value,
-                cIdentityOther: document.getElementById('contact-identity-other').value,
                 cPhone: document.getElementById('contact-phone').value,
                 cEmail: document.getElementById('contact-email').value,
                 receiptTitle: document.getElementById('receipt-title').value,
@@ -852,20 +772,16 @@
                     const draft = JSON.parse(draftJSON);
                     if (draft.attendance) selectAttendance(draft.attendance);
                     if (draft.cName) document.getElementById('contact-name').value = draft.cName;
-                    if (draft.cIdentity) document.getElementById('contact-identity').value = draft.cIdentity;
-                    if (draft.cIdentityOther) document.getElementById('contact-identity-other').value = draft.cIdentityOther;
                     if (draft.cPhone) document.getElementById('contact-phone').value = draft.cPhone;
                     if (draft.cEmail) document.getElementById('contact-email').value = draft.cEmail;
                     if (draft.receiptTitle) document.getElementById('receipt-title').value = draft.receiptTitle;
                     if (draft.receiptRequest) document.getElementById('receipt-request').value = draft.receiptRequest;
-                    if (draft.extraDonation) document.getElementById('extra-donation').value = draft.extraDonation;
                     if (draft.paymentMethod) selectPaymentMethod(draft.paymentMethod);
                     
                     if (draft.sameAsContactReceipt !== undefined) {
                         document.getElementById('same-as-contact-checkbox').checked = draft.sameAsContactReceipt;
                     }
-
-                    toggleOtherInput();
+                    if (draft.extraDonation) document.getElementById('extra-donation').value = draft.extraDonation;
                     
                     if(draft.cName) {
                         document.getElementById('draft-notice').style.display = 'block';
@@ -873,7 +789,7 @@
                     }
                 } catch(e) {}
             }
-            updateTotal();
+            updatePaymentSection();
         }
 
         window.addEventListener('DOMContentLoaded', () => {
@@ -891,7 +807,7 @@
 
         function submitFinalData() {
             const fileInput = document.getElementById('payment-proof');
-            const donation = parseInt(document.getElementById('extra-donation').value) || 0;
+            const donation = getDonationAmount();
             const paymentMethod = donation > 0 ? getSelectedPaymentMethod() : "無需付款";
 
             if (donation > 0 && paymentMethod === '銀行轉帳' && fileInput.files.length === 0) {
@@ -910,8 +826,9 @@
                 phone: document.getElementById('contact-phone').value,
                 email: document.getElementById('contact-email').value,
                 
-                contactIdentity: document.getElementById('contact-identity').value,
-                contactIdentityOther: document.getElementById('contact-identity-other').value,
+                // 保留身份固定值，確保不破壞後端 Google Sheet 欄位順序
+                contactIdentity: "嘉賓/VIP",
+                contactIdentityOther: "",
                 receiptTitle: donation > 0 ? document.getElementById('receipt-title').value : "不適用",
                 receiptRequest: donation > 0 ? (document.getElementById('receipt-request').value.trim() || "無") : "無",
                 paymentMethod: paymentMethod,
@@ -952,16 +869,12 @@
             .then(data => {
                 if(data.status === 'success') {
                     
-                    const finalIdentity = (payload.contactIdentity === '其他' && payload.contactIdentityOther) 
-                        ? `其他 (${payload.contactIdentityOther})` 
-                        : payload.contactIdentity;
-
                     db.collection('registrations').add({
                         timestamp: new Date().toISOString(),
                         formType: payload.formType,
                         attendance: payload.attendance,
                         contactName: payload.name,
-                        contactIdentity: finalIdentity,
+                        contactIdentity: payload.contactIdentity,
                         contactPhone: payload.phone,
                         contactEmail: payload.email,
                         receiptTitle: payload.receiptTitle,
