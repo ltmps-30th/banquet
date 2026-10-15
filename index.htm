@@ -347,10 +347,10 @@
                         <div style="width:100%;">
                             <span style="color:#888; font-size:12px; display:block;">捐款</span>
                             <div class="donation-tier">
-                                <strong>個人：</strong>凡捐款港幣 220 元，可獲邀出席盆菜宴（1席）。
+                                <strong>個人：</strong>凡捐款港幣 220 元，可獲邀出席盆菜宴（1位）。
                             </div>
                             <div class="donation-tier" style="margin-top:8px;">
-                                <strong>團體：</strong>凡捐款港幣 2520 元（210元 x 12席），可獲邀出席盆菜宴（1圍12席）。
+                                <strong>團體：</strong>凡捐款港幣 2520 元（210元 x 12位），可獲邀出席盆菜宴（1圍12位）。
                             </div>
                         </div>
                     </div>
@@ -424,7 +424,7 @@
                         <input type="number" id="extra-donation" min="0" inputmode="numeric" pattern="[0-9]*" placeholder="填寫金額 (可留空)" oninput="updateTotal(); saveDraft();" onwheel="this.blur()">
                     </div>
 
-                    <div class="total-price-tag" id="display-total">應付總額：HK$ 220 (個人 1 席)</div>
+                    <div class="total-price-tag" id="display-total">應付總額：HK$ 220 (個人 1 位)</div>
 
                     <!-- 付款及收據卡片 -->
                     <div class="ui-card">
@@ -712,7 +712,7 @@
             const extraDonation = parseInt(document.getElementById('extra-donation').value) || 0;
             const totalAmt = mealCost + extraDonation;
             
-            let tierDesc = (totalPax === 12) ? `團體 1 圍 12 席 $2,520` : `個人 ${totalPax} 席 $${mealCost}`;
+            let tierDesc = (totalPax === 12) ? `團體 1 圍 12 位 $2,520` : `個人 ${totalPax} 位 $${mealCost}`;
             let extraText = extraDonation > 0 ? ` + 額外捐款 $${extraDonation}` : "";
             document.getElementById('display-total').innerText = `應付總額：HK$ ${totalAmt}\n(${tierDesc}${extraText})`;
         }
@@ -784,7 +784,7 @@
             const mealCost = calculateMealCost(totalPax);
             const extraDonation = parseInt(document.getElementById('extra-donation').value) || 0;
             const totalAmt = mealCost + extraDonation;
-            const tierType = (totalPax === 12) ? `團體盆菜宴 (1圍12席 HK$ 2,520)` : `個人盆菜宴 (${totalPax}席 HK$ ${mealCost})`;
+            const tierType = (totalPax === 12) ? `團體盆菜宴 (1圍12位 HK$ 2,520)` : `個人盆菜宴 (${totalPax}位 HK$ ${mealCost})`;
 
             let summaryHTML = `
                 <div class="ui-card">
