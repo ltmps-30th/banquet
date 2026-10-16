@@ -350,7 +350,7 @@
                                 <strong>個人：</strong>凡捐款港幣 220 元，可獲邀出席盆菜宴（1位）。
                             </div>
                             <div class="donation-tier" style="margin-top:8px;">
-                                <strong>團體：</strong>凡捐款港幣 2520 元（210元 x 12位），可獲邀出席盆菜宴（1圍12位）。
+                                <strong>團體：</strong>凡捐款港幣 2520 元（210元 x 12位），可獲邀出席盆菜宴（1席12位）。
                             </div>
                         </div>
                     </div>
@@ -408,14 +408,14 @@
                     <!-- 其他同行出席者 -->
                     <div class="ui-card">
                         <div class="section-title" style="border-color:var(--primary-blue);">同行出席者 (如有)</div>
-                        <p style="font-size:13px; color:#888; margin-bottom:15px;">只需提供姓名。如滿 12 人（1圍）將自動以團體捐款 HK$ 2,520 計算。</p>
+                        <p style="font-size:13px; color:#888; margin-bottom:15px;">只需提供姓名。如滿 12 位（1席）將自動以團體捐款 HK$ 2,520 計算。</p>
                         
                         <div id="extra-attendees-container">
                             <!-- JS 動態加入的欄位會出現於此 -->
                         </div>
 
                         <button type="button" class="btn btn-add" onclick="addAttendee()">+ 增加出席人數 (每位 HK$ 220)</button>
-                        <button type="button" class="btn btn-table" onclick="fillFullTable()">🎉 團體包圍：一鍵加滿至 12 人 (HK$ 2,520)</button>
+                        <button type="button" class="btn btn-table" onclick="fillFullTable()">🎉 團體包席：一鍵加滿至 12 位 (HK$ 2,520)</button>
                     </div>
 
                     <!-- 額外捐款 (已移除上下加減箭咀並防止滾輪誤觸) -->
@@ -656,7 +656,7 @@
         function addAttendee(name = '') {
             const currentPax = document.querySelectorAll('.extra-att-row').length + 1;
             if(currentPax >= 12) {
-                alert('已達每圍 12 人上限！');
+                alert('已達每席 12 人上限！');
                 return;
             }
 
@@ -682,7 +682,7 @@
         function fillFullTable() {
             let currentPax = document.querySelectorAll('.extra-att-row').length + 1;
             if (currentPax >= 12) {
-                alert('目前已是 12 人（1圍）！');
+                alert('目前已是 12 人（1席）！');
                 return;
             }
             while (currentPax < 12) {
@@ -712,7 +712,7 @@
             const extraDonation = parseInt(document.getElementById('extra-donation').value) || 0;
             const totalAmt = mealCost + extraDonation;
             
-            let tierDesc = (totalPax === 12) ? `團體 1 圍 12 位 $2,520` : `個人 ${totalPax} 位 $${mealCost}`;
+            let tierDesc = (totalPax === 12) ? `團體 1 席 12 位 $2,520` : `個人 ${totalPax} 位 $${mealCost}`;
             let extraText = extraDonation > 0 ? ` + 額外捐款 $${extraDonation}` : "";
             document.getElementById('display-total').innerText = `應付總額：HK$ ${totalAmt}\n(${tierDesc}${extraText})`;
         }
@@ -784,7 +784,7 @@
             const mealCost = calculateMealCost(totalPax);
             const extraDonation = parseInt(document.getElementById('extra-donation').value) || 0;
             const totalAmt = mealCost + extraDonation;
-            const tierType = (totalPax === 12) ? `團體盆菜宴 (1圍12位 HK$ 2,520)` : `個人盆菜宴 (${totalPax}位 HK$ ${mealCost})`;
+            const tierType = (totalPax === 12) ? `團體盆菜宴 (1席12位 HK$ 2,520)` : `個人盆菜宴 (${totalPax}位 HK$ ${mealCost})`;
 
             let summaryHTML = `
                 <div class="ui-card">
@@ -925,7 +925,7 @@
             const mealCost = calculateMealCost(totalPax);
             const extraDonation = parseInt(document.getElementById('extra-donation').value) || 0;
             const totalAmt = mealCost + extraDonation;
-            const tierType = (totalPax === 12) ? "團體 (1圍12席)" : `個人 (${totalPax}席)`;
+            const tierType = (totalPax === 12) ? "團體 (1席12位)" : `個人 (${totalPax}位)`;
 
             const payload = {
                 formType: "校友報名",
